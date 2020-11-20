@@ -23,6 +23,23 @@ public enum ImageResource {
     PLAYER_UP("player_up.png"),
     STONE("stone.png"),
     TREE("tree.png"),
+    BOMB_1("bomb1.png"),
+    BOMB_2("bomb2.png"),
+    BOMB_3("bomb3.png"),
+    BOMB_4("bomb4.png"),
+    PRINCESS("bomberwoman.png"),
+    BOMB_NB_DEC("bonus_bomb_nb_dec.png"),
+    BOMB_NB_INC("bonus_bomb_nb_inc.png"),
+    BOMB_RANGE_DEC("bonus_bomb_range_dec.png"),
+    BOMB_RANGE_INC("bonus_bomb_range_inc.png"),
+    BOX("box.png"),
+    DOOR_CLOSED("door_closed.png"),
+    DOOR_OPENED("door_opened.png"),
+    EXPLOSION("explosion.png"),
+    MONSTER_DOWN("monster_down.png"),
+    MONSTER_LEFT("monster_left.png"),
+    MONSTER_RIGHT("monster_right.png"),
+    MONSTER_UP("monster_up.png"),
     ;
 
     private final String FileName;
