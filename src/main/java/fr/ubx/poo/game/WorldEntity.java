@@ -23,8 +23,8 @@ public enum WorldEntity {
     BombRangeInc('>'),
     BombRangeDec('<'),
     BombNumberInc('+'),
-    BombNumberDec('-')
-        ;
+    BombNumberDec('-'),
+    ;
 
 
     private char getCode() {

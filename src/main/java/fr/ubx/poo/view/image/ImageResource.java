@@ -39,7 +39,7 @@ public enum ImageResource {
     MONSTER_DOWN("monster_down.png"),
     MONSTER_LEFT("monster_left.png"),
     MONSTER_RIGHT("monster_right.png"),
-    MONSTER_UP("monster_up.png"),
+    MONSTER_UP("monster_up.png")
     ;
 
     private final String FileName;
