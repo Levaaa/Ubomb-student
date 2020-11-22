@@ -49,8 +49,8 @@ public class LoadFromFile {
 
         
         worldDim(level);
-        System.out.println("w = " + width + "h = " + height);
-        mapEntities = new WorldEntity[12][12];
+        System.out.println("w = " + width + " h = " + height);
+        mapEntities = new WorldEntity[width][height];
 
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
