@@ -20,6 +20,19 @@ public class Player extends GameObject implements Movable {
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
+    private int range = 1;
+    private int bombs = 0;
+    private int key = 0;
+
+    public int getRange() {
+        return range;
+    }
+    public int getBombs() {
+        return bombs;
+    }
+    public int getKey() {
+        return key;
+    }
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -54,7 +67,15 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Tree") return false;
             if (decor.toString() ==  "Box") return false;
             if (decor.toString() ==  "Monster") lives --;
-            
+            if (decor.toString() ==  "Princess") winner = true;
+            if (decor.toString() ==  "BombNbDec") bombs --;
+            if (decor.toString() ==  "BombNbInc") bombs ++;
+            if (decor.toString() ==  "BombRangeDec") range --;
+            if (decor.toString() ==  "BombRangeInc") range ++;
+            if (decor.toString() ==  "Key") key ++;
+            if (decor.toString() ==  "DoorNextOpened") game.setLevel(game.getLevel() + 1);
+            if (decor.toString() ==  "DoorPrevOpened") game.setLevel(game.getLevel() - 1);
+
             return true;
         }
         return false;

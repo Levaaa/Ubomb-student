@@ -1,9 +1,9 @@
 package fr.ubx.poo.model.decor;
 
-public class DoorOpended extends Decor {
+public class DoorNextClosed extends Decor {
 
     @Override
     public String toString() {
-        return "DoorOpended";
+        return "DoorNextClosed";
     }
 }

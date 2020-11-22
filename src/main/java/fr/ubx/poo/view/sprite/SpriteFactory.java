@@ -35,11 +35,15 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(BOMB_RANGE_DEC), position);
         if (decor instanceof BombRangeInc)
             return new SpriteDecor(layer, factory.get(BOMB_RANGE_INC), position);
-        if (decor instanceof DoorClosed)
+        if (decor instanceof DoorNextClosed)
             return new SpriteDecor(layer, factory.get(DOOR_CLOSED), position);
-        if (decor instanceof DoorOpended)
+        if (decor instanceof DoorNextOpened)
+            return new SpriteDecor(layer, factory.get(DOOR_OPENED), position); 
+        if (decor instanceof DoorPrevOpened)
             return new SpriteDecor(layer, factory.get(DOOR_OPENED), position);  
-        
+        if (decor instanceof Key)
+            return new SpriteDecor(layer, factory.get(KEY), position); 
+
         return null;
     }
 
