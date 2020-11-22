@@ -19,9 +19,21 @@ public class Game {
     private final Player player;
     private final String worldPath;
     public int initPlayerLives;
+    private int level = 1;
+
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     public Game(String worldPath) {
-        world = new WorldStatic();
+        //load world
+        LoadFromFile lvl = new LoadFromFile(level);
+        world = new WorldFromFile(lvl.getMapEntities());
         this.worldPath = worldPath;
         loadConfig(worldPath);
         Position positionPlayer = null;
