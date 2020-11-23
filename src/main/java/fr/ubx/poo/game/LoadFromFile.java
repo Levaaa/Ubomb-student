@@ -30,13 +30,12 @@ public class LoadFromFile {
                 if (y == 0) x++;
             }
             this.width = x;
-            this.height =y;
+            this.height = y;
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        
+        }        
     }
 
 
@@ -64,52 +63,52 @@ public class LoadFromFile {
                         case '\n' :
                             break;
                         case '_' :
-                            this.mapEntities[x][y] = Empty;
+                            this.mapEntities[y][x] = Empty;
                             break;
                         case 'B' :
-                            this.mapEntities[x][y] = Box;
+                            this.mapEntities[y][x] = Box;
                             break;
                         case 'H' :
-                            this.mapEntities[x][y] = Heart;
+                            this.mapEntities[y][x] = Heart;
                             break;
                         case 'K' :
-                            this.mapEntities[x][y] = Key;
+                            this.mapEntities[y][x] = Key;
                             break;
                         case 'M' :
-                            this.mapEntities[x][y] = Monster;
+                            this.mapEntities[y][x] = Monster;
                             break;
                         case 'V':
-                            this.mapEntities[x][y] = DoorPrevOpened;
+                            this.mapEntities[y][x] = DoorPrevOpened;
                             break;
                         case 'N':
-                            this.mapEntities[x][y] = DoorNextOpened;
+                            this.mapEntities[y][x] = DoorNextOpened;
                             break;
                         case 'n':
-                            this.mapEntities[x][y] = DoorNextClosed;
+                            this.mapEntities[y][x] = DoorNextClosed;
                             break;
                         case 'P':
-                            this.mapEntities[x][y] = Player;
+                            this.mapEntities[y][x] = Player;
                             break;
                         case 'S':
-                            this.mapEntities[x][y] = Stone;
+                            this.mapEntities[y][x] = Stone;
                             break;
                         case 'T':
-                            this.mapEntities[x][y] = Tree;
+                            this.mapEntities[y][x] = Tree;
                             break;
                         case 'W':
-                            this.mapEntities[x][y] = Princess;
+                            this.mapEntities[y][x] = Princess;
                             break;
                         case '>':
-                            this.mapEntities[x][y] = BombRangeInc;
+                            this.mapEntities[y][x] = BombRangeInc;
                             break;
                         case '<':
-                            this.mapEntities[x][y] = BombRangeDec;
+                            this.mapEntities[y][x] = BombRangeDec;
                             break;
                         case '+':
-                            this.mapEntities[x][y] = BombNumberInc;
+                            this.mapEntities[y][x] = BombNumberInc;
                             break;
                         case '-':
-                            this.mapEntities[x][y] = BombNumberDec;
+                            this.mapEntities[y][x] = BombNumberDec;
                             break;
                         default :
                             break;
