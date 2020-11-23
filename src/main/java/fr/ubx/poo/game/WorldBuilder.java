@@ -52,6 +52,8 @@ public class WorldBuilder {
                 return new Princess();
             case Key:
                 return new Key();
+            case Heart:
+                return new Heart();
             default:
                 return null;
         }

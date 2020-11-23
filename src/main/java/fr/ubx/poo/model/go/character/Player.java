@@ -7,6 +7,7 @@ package fr.ubx.poo.model.go.character;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
+import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
@@ -67,14 +68,23 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Tree") return false;
             if (decor.toString() ==  "Box") return false;
             if (decor.toString() ==  "Monster") lives --;
+            if (decor.toString() ==  "Heart") lives ++;
             if (decor.toString() ==  "Princess") winner = true;
-            if (decor.toString() ==  "BombNbDec")
+            if (decor.toString() ==  "BombNbDec"){
                 if (bombs > 0) bombs --;
+                world.clear(nextPos);
+            }
             if (decor.toString() ==  "BombNbInc") bombs ++;
             if (decor.toString() ==  "BombRangeDec") 
                 if (range > 1) range --;
-            if (decor.toString() ==  "BombRangeInc") range ++;
-            if (decor.toString() ==  "Key") key ++;
+
+            if (decor.toString() ==  "BombRangeInc"){
+                range ++;
+            }
+            if (decor.toString() ==  "Key") {
+                key ++;
+                world.set(nextPos, new DoorNextOpened());
+            }
             if (decor.toString() ==  "DoorNextClosed") game.setLevel(game.getLevel() + 1);
             if (decor.toString() ==  "DoorPrevOpened") game.setLevel(game.getLevel() - 1);
 

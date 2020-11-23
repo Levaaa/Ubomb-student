@@ -32,7 +32,7 @@ public class Game {
 
     public Game(String worldPath) {
         //load world
-        LoadFromFile lvl = new LoadFromFile(level);
+        LoadFromFile lvl = new LoadFromFile(level, worldPath);
         world = new WorldFromFile(lvl.getMapEntities());
         this.worldPath = worldPath;
         loadConfig(worldPath);

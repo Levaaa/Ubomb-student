@@ -14,10 +14,8 @@ public class LoadFromFile {
     private WorldEntity[][] mapEntities;
     private int width;
     private int height;
-    //path léo
-    String path = "/home/leo/workspace/poo/git/Ubomb-student/src/main/resources/sample/level";
 
-    public void worldDim(int level){
+    public void worldDim(int level, String path){
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
@@ -42,24 +40,26 @@ public class LoadFromFile {
     }
 
 
-    public LoadFromFile(int level) {
+    public LoadFromFile(int level, String path) {
         //charge le niveau depuis le fichier
-        path = path.concat(String.valueOf(level)) + ".txt";
+        path = path.concat("/level" + String.valueOf(level) + ".txt");
         System.out.println(path);
 
         
-        worldDim(level);
+        worldDim(level, path);
         System.out.println("w = " + width + " h = " + height);
         mapEntities = new WorldEntity[width][height];
+
 
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
 
-            for(int y = 0; y < 12; y++){
-                for(int x = 0; x < 12 + 1; x++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width + 1; x++){
                     data = file.read();
                     char c = (char) data;
+                    System.out.print(c);
                     switch(c){
                         case '\n' :
                             break;

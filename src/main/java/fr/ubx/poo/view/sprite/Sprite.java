@@ -21,6 +21,11 @@ public abstract class Sprite {
         this.image = image;
     }
 
+
+    public Image getImage() {
+        return this.image;
+    }
+
     public final void setImage(Image image) {
         if (this.image == null || this.image != image) {
             this.image = image;
