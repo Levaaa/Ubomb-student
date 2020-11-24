@@ -14,12 +14,21 @@ public class World {
     private final Map<Position, Decor> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
+    private boolean changed = false; 
 
     public World(WorldEntity[][] raw) {
         this.raw = raw;
         dimension = new Dimension(raw.length, raw[0].length);
         grid = WorldBuilder.build(raw, dimension);
     }
+
+    public boolean hasChanged() { 
+        return changed; 
+    }
+    public void setChanged(boolean bool) { 
+        this.changed = bool; 
+    }
+
 
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {

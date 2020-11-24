@@ -70,29 +70,35 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Monster") lives --;
             if (decor.toString() ==  "Heart") { 
             	lives ++; 
-            	world.clear(nextPos);
+                world.clear(nextPos);
+                world.setChanged(true);
             }
             if (decor.toString() ==  "Princess") winner = true;
             if (decor.toString() ==  "BombNbDec"){
                 if (bombs > 0) bombs --;
                 world.clear(nextPos);
+                world.setChanged(true);
             }
             if (decor.toString() ==  "BombNbInc") {
             	bombs ++;
-            	world.clear(nextPos);
+                world.clear(nextPos);
+                world.setChanged(true);
             }
             if (decor.toString() ==  "BombRangeDec") {
                 if (range > 1) range --;
                 world.clear(nextPos);
+                world.setChanged(true);
             }
             if (decor.toString() ==  "BombRangeInc"){
                 range ++;
                 world.clear(nextPos);
+                world.setChanged(true);
             }
             if (decor.toString() ==  "Key") {
                 key ++;
                 world.clear(nextPos);
                 world.set(nextPos, new DoorNextOpened());
+                world.setChanged(true);
             }
             if (decor.toString() ==  "DoorNextClosed") game.setLevel(game.getLevel() + 1);
             if (decor.toString() ==  "DoorPrevOpened") game.setLevel(game.getLevel() - 1);

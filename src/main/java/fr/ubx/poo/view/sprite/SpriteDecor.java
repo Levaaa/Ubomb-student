@@ -17,8 +17,6 @@ public class SpriteDecor extends Sprite {
 
     @Override
     public void updateImage() {
-        
-        //setImage(ImageFactory.getInstance().get(ImageResource.PLAYER_DOWN));
     }
 
     @Override

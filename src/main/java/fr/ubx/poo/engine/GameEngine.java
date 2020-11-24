@@ -131,6 +131,12 @@ public final class GameEngine {
 
     private void update(long now) {
         player.update(now);
+        if(game.getWorld().hasChanged()){
+            sprites.forEach(Sprite::remove); 
+            sprites.clear();
+            game.getWorld().setChanged(false);
+            game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        }
 
         if (player.isAlive() == false) {
             gameLoop.stop();
