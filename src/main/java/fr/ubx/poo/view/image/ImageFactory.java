@@ -60,6 +60,12 @@ public final class ImageFactory {
     public Image getMonster(Direction direction) {
         return get(directions[direction.ordinal()]);
     }
+    
+    public Image getBomb() {
+        return get(BOMB_1);
+    }
+
+
 
     /**
      * Holder

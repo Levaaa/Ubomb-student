@@ -5,10 +5,12 @@
 package fr.ubx.poo.game;
 
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.go.*;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
 
 public class World {
     private final Map<Position, Decor> grid;
@@ -25,10 +27,10 @@ public class World {
     public boolean hasChanged() { 
         return changed; 
     }
+
     public void setChanged(boolean bool) { 
         this.changed = bool; 
     }
-
 
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
@@ -68,4 +70,5 @@ public class World {
     public boolean isEmpty(Position position) {
         return grid.get(position) == null;
     }
+
 }

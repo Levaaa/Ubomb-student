@@ -6,8 +6,10 @@ package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.view.sprite.Sprite;
+import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -37,6 +39,7 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
+    private final List<Sprite> spritesBomb = new ArrayList<>();
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -106,6 +109,13 @@ public final class GameEngine {
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
         }
+        if (input.isBomb()) {
+            System.out.println("SPACE has been pressed");
+            if (player.getnbAvailable() > 0){
+                spritesBomb.add(SpriteFactory.createBomb(layer, new Bomb(game, player.getPosition()))); 
+                player.setnbAvailable(player.getnbAvailable() - 1);
+            }
+        }
         input.clear();
     }
 
@@ -149,6 +159,7 @@ public final class GameEngine {
     }
 
     private void render() {
+        spritesBomb.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
         // last rendering to have player in the foreground
         spritePlayer.render();

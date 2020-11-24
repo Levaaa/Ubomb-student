@@ -19,6 +19,14 @@ public class Position {
         this.y = position.y;
     }
 
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

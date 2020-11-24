@@ -11,7 +11,7 @@ import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.layout.Pane;
 import fr.ubx.poo.model.decor.*;
-
+import fr.ubx.poo.model.go.*;
 
 public final class SpriteFactory {
 
@@ -50,6 +50,10 @@ public final class SpriteFactory {
 
     public static Sprite createPlayer(Pane layer, Player player) {
         return new SpritePlayer(layer, player);
+    }
+
+    public static Sprite createBomb(Pane layer, Bomb bomb) {
+        return new SpriteBomb(layer, bomb);
     }
 
     /*

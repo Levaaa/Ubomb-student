@@ -22,8 +22,9 @@ public class Player extends GameObject implements Movable {
     private int lives = 1;
     private boolean winner;
     private int range = 1;
-    private int bombs = 0;
+    private int bombs = 1;
     private int key = 0;
+    private int nbAvailable = 1;
 
     public int getRange() {
         return range;
@@ -34,6 +35,13 @@ public class Player extends GameObject implements Movable {
     public int getKey() {
         return key;
     }
+    public int getnbAvailable() {
+        return nbAvailable;
+    }
+    public void setnbAvailable(int nb) {
+        this.nbAvailable = nb;
+    }
+
 
     public Player(Game game, Position position) {
         super(game, position);
