@@ -21,7 +21,7 @@ public class Player extends GameObject implements Movable {
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
-    private int range = 1;
+    private int range = 10;
     private int bombs = 1;
     private int key = 0;
     private int nbAvailable = 1;
@@ -81,33 +81,31 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Heart") { 
             	lives ++; 
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "Princess") winner = true;
             if (decor.toString() ==  "BombNbDec"){
-                if (bombs > 0) bombs --;
+                if (bombs > 1) {
+                    bombs --;
+                    nbAvailable--;
+                }
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "BombNbInc") {
-            	bombs ++;
+                bombs ++;
+                nbAvailable++;
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "BombRangeDec") {
                 if (range > 1) range --;
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "BombRangeInc"){
                 range ++;
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "Key") {
                 key ++;
                 world.clear(nextPos);
-                world.setChanged(true);
             }
             if (decor.toString() ==  "DoorNextClosed") game.setLevel(game.getLevel() + 1);
             if (decor.toString() ==  "DoorPrevOpened") game.setLevel(game.getLevel() - 1);

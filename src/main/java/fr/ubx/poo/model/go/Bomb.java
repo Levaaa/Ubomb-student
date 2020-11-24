@@ -6,9 +6,11 @@ package fr.ubx.poo.model.go;
 
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.decor.*;
 
 import java.sql.Time;
 
+import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.Entity;
 
@@ -34,10 +36,10 @@ public class Bomb extends GameObject {
 
     //execute toute la séquence de la bombe 
     public void doExplosion(){
-        t.schedule(new decompte(), 1000);
+        t.schedule(new Decompte(), 1000);
     }
 
-    public class decompte extends TimerTask{
+    private class Decompte extends TimerTask{ 
 
         public void run(){
             phase--;
@@ -45,22 +47,101 @@ public class Bomb extends GameObject {
             t.cancel();
             if(phase > -1){
                 t = new Timer();
-                t.schedule(new decompte(), 1000);
+                t.schedule(new Decompte(), 1000);
             } 
             //execution explosion
             if(phase == 0){
                 //redonne la bombe
                 game.getPlayer().setnbAvailable(game.getPlayer().getnbAvailable() + 1);
-                makeExplosion();
+                
+                makeExplosion(game.getPlayer().getRange(), 
+                              getPosition(),
+                              Direction.W
+                              );
+                makeExplosion(game.getPlayer().getRange(), 
+                              getPosition(),
+                              Direction.E
+                              );
+
+                makeExplosion(game.getPlayer().getRange(), 
+                              getPosition(),
+                              Direction.S
+                              );
+                makeExplosion(game.getPlayer().getRange(), 
+                              getPosition(),
+                              Direction.N
+                              );
             }
             
         }
-    }
+    
 
     //execute juste la partie explosion avec les différentes interactions liées
-    private void makeExplosion(){
-        return;
+    private void makeExplosion(int range, Position pos, Direction direction){
+        if (range == 0) return;
+        System.out.println("range =" + range + "pos =" + pos);
+        World world = game.getWorld();
+        Decor decor = world.get(pos);
+        if (decor != null){
+            if (decor instanceof Stone)
+                return;
+            if (decor instanceof Tree){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+            if (decor instanceof Box) 
+                world.clear(pos);
+                
+            if (decor instanceof Monster){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+            if (decor instanceof Princess)
+                return;
+            if (decor instanceof BombNbDec){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+            if (decor instanceof BombNbInc){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;                
+            }
+            if (decor instanceof BombRangeDec){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+            if (decor instanceof BombRangeInc){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+            if (decor instanceof DoorNextClosed)
+                return;
+            if (decor instanceof DoorNextOpened)
+                return;
+            if (decor instanceof DoorPrevOpened)
+                return;
+            if (decor instanceof Key)
+                return;
+            if (decor instanceof Heart){
+                world.clear(pos);
+                //world.set(pos, new Explosion());
+                return;
+            }
+        }else{
+            if (world.isInside(direction.nextPosition(pos))){
+                
+                //world.set(pos, new Explosion());
+                makeExplosion(range - 1, direction.nextPosition(pos), direction);
+            }
+            return;            
+        }
     }
 
-
+}
 }

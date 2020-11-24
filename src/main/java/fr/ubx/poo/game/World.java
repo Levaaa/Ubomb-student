@@ -49,10 +49,12 @@ public class World {
 
     public void set(Position position, Decor decor) {
         grid.put(position, decor);
+        changed = true;
     }
 
     public void clear(Position position) {
         grid.remove(position);
+        changed = true;
     }
 
     public void forEach(BiConsumer<Position, Decor> fn) {
