@@ -66,7 +66,9 @@ public class Player extends GameObject implements Movable {
             if (decor == null) return true;
             if (decor.toString() ==  "Stone") return false;
             if (decor.toString() ==  "Tree") return false;
-            if (decor.toString() ==  "Box") return false;
+            if (decor.toString() ==  "Box") {
+                return canMoveBox(direction, nextPos);
+            }
             if (decor.toString() ==  "Monster") lives --;
             if (decor.toString() ==  "Heart") { 
             	lives ++; 
@@ -97,7 +99,6 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Key") {
                 key ++;
                 world.clear(nextPos);
-                world.set(nextPos, new DoorNextOpened());
                 world.setChanged(true);
             }
             if (decor.toString() ==  "DoorNextClosed") game.setLevel(game.getLevel() + 1);
@@ -106,6 +107,23 @@ public class Player extends GameObject implements Movable {
             return true;
         }
         return false;
+    }
+
+    private boolean canMoveBox(Direction direction, Position pos){
+        Position nextPos = direction.nextPosition(pos);
+        World world = game.getWorld();
+        //collision avec les bords
+        if (nextPos.inside(world.dimension)){
+            Decor decor = world.get(nextPos);
+            if (decor == null){
+                world.setChanged(true);
+                world.clear(pos);
+                world.set(nextPos, new Box());
+                return true;
+            }
+        }
+        return false;
+
     }
 
     public void doMove(Direction direction) {
