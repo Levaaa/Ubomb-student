@@ -22,6 +22,10 @@ public final class ImageFactory {
             DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
     };
 
+    private final ImageResource[] bombs = new ImageResource[]{
+        EXPLOSION, BOMB_1, BOMB_2, BOMB_3, BOMB_4, 
+    };
+
     private ImageFactory() {
         images = new Image[ImageResource.values().length];
     }
@@ -61,8 +65,9 @@ public final class ImageFactory {
         return get(directions[direction.ordinal()]);
     }
     
-    public Image getBomb() {
-        return get(BOMB_1);
+    public Image getBomb(int phase) {
+        if (phase >= 0 && phase < 5) return get(bombs[phase]);
+        return null;
     }
 
 

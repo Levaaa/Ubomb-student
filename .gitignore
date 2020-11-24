@@ -1,3 +1,4 @@
+*.class
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,intellij+all
@@ -129,6 +130,7 @@ Temporary Items
 
 ### Gradle ###
 .gradle
+.gradle/
 build/
 
 # Ignore Gradle GUI config

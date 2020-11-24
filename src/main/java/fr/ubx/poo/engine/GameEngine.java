@@ -112,8 +112,10 @@ public final class GameEngine {
         if (input.isBomb()) {
             System.out.println("SPACE has been pressed");
             if (player.getnbAvailable() > 0){
-                spritesBomb.add(SpriteFactory.createBomb(layer, new Bomb(game, player.getPosition()))); 
                 player.setnbAvailable(player.getnbAvailable() - 1);
+                Bomb bomb =  new Bomb(game, player.getPosition());
+                spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
+                bomb.doExplosion();
             }
         }
         input.clear();
