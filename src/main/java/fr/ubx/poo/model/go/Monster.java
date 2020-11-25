@@ -31,6 +31,19 @@ public class Monster extends GameObject implements Movable {
         if (nextPos.inside(world.dimension)){
             Decor decor = world.get(nextPos);
             if (decor == null) return true;
+            if (decor instanceof Stone) return false;
+            if (decor instanceof Tree) return false;
+            if (decor instanceof Box) return false;
+            if (decor instanceof Princess) return false;
+            if (decor instanceof BombNbDec) return true;
+            if (decor instanceof BombNbInc) return true;
+            if (decor instanceof BombRangeDec) return true;
+            if (decor instanceof BombRangeInc) return true;
+            if (decor instanceof DoorNextClosed) return false;
+            if (decor instanceof DoorNextOpened) return false;
+            if (decor instanceof DoorPrevOpened) return false;
+            if (decor instanceof Key) return true;
+            if (decor instanceof Heart) return true;
         }
         return false;
     }
