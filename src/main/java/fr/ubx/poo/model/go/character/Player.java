@@ -162,7 +162,6 @@ public class Player extends GameObject implements Movable {
         if (invincible == true) return;
         this.lives --;
         this.invincible = true;
-        System.out.println("invicible");
         new java.util.Timer().schedule( 
             new java.util.TimerTask() {
                 @Override

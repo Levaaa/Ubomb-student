@@ -50,10 +50,7 @@ public class Game {
         List<Position> posMonsters = world.findMonster();
         for (Position p : posMonsters){
             monsters.add(new Monster(this, p));
-            System.out.println("un monstre a été ajouté");
         }
-
-
         try {
             positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);

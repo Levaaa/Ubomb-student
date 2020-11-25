@@ -116,10 +116,9 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-            System.out.println("SPACE has been pressed");
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
-                Bomb bomb =  new Bomb(game, player.getPosition());
+                Bomb bomb = new Bomb(game, player.getPosition());
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
                 bomb.doExplosion();
             }
@@ -164,6 +163,8 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
+
+        monstersMove();
     }
 
     private void render() {
@@ -176,5 +177,12 @@ public final class GameEngine {
 
     public void start() {
         gameLoop.start();
+    }
+
+    private void monstersMove(){
+        for(Monster m : monsters){
+            m.move();
+        }
+        return;
     }
 }

@@ -5,6 +5,8 @@ import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
+import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.decor.*;
 
 public class Monster extends GameObject implements Movable {
 
@@ -24,9 +26,11 @@ public class Monster extends GameObject implements Movable {
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
+        World world = game.getWorld();
         //collision avec les bords
-        if (nextPos.inside(game.getWorld().dimension)){
-            return true;
+        if (nextPos.inside(world.dimension)){
+            Decor decor = world.get(nextPos);
+            if (decor == null) return true;
         }
         return false;
     }
@@ -41,5 +45,18 @@ public class Monster extends GameObject implements Movable {
         return alive;
     }
 
+    public void move(){
+        Direction nextmove = Direction.random();
+        if (canMove(nextmove)){
+            updateDirection(nextmove);
+            doMove(nextmove);
+        }
+    }
+
+    private void updateDirection(Direction direction){
+        if (direction != this.direction) {
+            this.direction = direction;
+        }
+    }
 }
 
