@@ -9,6 +9,10 @@ import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
+import fr.ubx.poo.game.Position;
+import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.decor.DoorNextClosed;
+import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.model.go.character.Player;
@@ -121,6 +125,17 @@ public final class GameEngine {
                 Bomb bomb = new Bomb(game, player.getPosition());
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
                 bomb.doExplosion();
+            }
+        }
+        if (input.isKey()){
+            //Si la position de la case où regarde le joueur est la porte alors on l'ouvre
+            World world = game.getWorld();
+            Position doorPosition = player.getDirection().nextPosition(player.getPosition());
+            if (world.get(doorPosition) instanceof DoorNextClosed){
+                if (player.getKey() > 0){
+                    world.set(doorPosition, new DoorNextOpened());
+                }
+                
             }
         }
         input.clear();

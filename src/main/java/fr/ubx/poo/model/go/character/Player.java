@@ -110,7 +110,7 @@ public class Player extends GameObject implements Movable {
                 key ++;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "DoorNextClosed") game.setLevel(game.getLevel() + 1);
+            if (decor.toString() ==  "DoorNextOpened") game.setLevel(game.getLevel() + 1);
             if (decor.toString() ==  "DoorPrevOpened") game.setLevel(game.getLevel() - 1);
 
             return true;
