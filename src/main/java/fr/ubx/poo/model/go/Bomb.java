@@ -79,7 +79,11 @@ public class Bomb extends GameObject {
     //execute juste la partie explosion avec les différentes interactions liées
     private void makeExplosion(int range, Position pos, Direction direction){
         if (range == 0) return;
-        System.out.println("range =" + range + "pos =" + pos);
+        //diminution vie player
+        if (pos.equals(game.getPlayer().getPosition())) {
+            game.getPlayer().hurtPlayer();
+            return;
+        }
         World world = game.getWorld();
         Decor decor = world.get(pos);
         if (decor != null){
@@ -90,12 +94,8 @@ public class Bomb extends GameObject {
                 //world.set(pos, new Explosion());
                 return;
             }
-            if (decor instanceof Box) 
+            if (decor instanceof Box){
                 world.clear(pos);
-                
-            if (decor instanceof Monster){
-                world.clear(pos);
-                //world.set(pos, new Explosion());
                 return;
             }
             if (decor instanceof Princess)
@@ -135,13 +135,11 @@ public class Bomb extends GameObject {
             }
         }else{
             if (world.isInside(direction.nextPosition(pos))){
-                
                 //world.set(pos, new Explosion());
                 makeExplosion(range - 1, direction.nextPosition(pos), direction);
             }
             return;            
         }
     }
-
-}
+    }
 }

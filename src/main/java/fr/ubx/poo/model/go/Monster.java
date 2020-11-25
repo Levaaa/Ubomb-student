@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2020. Laurent Réveillère
- */
-
-/*
 package fr.ubx.poo.model.go;
 
 import fr.ubx.poo.game.Direction;
@@ -15,6 +10,7 @@ public class Monster extends GameObject implements Movable {
 
     private final boolean alive = true;
     Direction direction;
+    private int speed = 0;
 
     public Monster(Game game, Position position) {
         super(game, position);
@@ -46,25 +42,4 @@ public class Monster extends GameObject implements Movable {
     }
 
 }
-*/
 
-package fr.ubx.poo.model.decor;
-
-import fr.ubx.poo.model.Movable;
-import fr.ubx.poo.game.Direction;
-
-public class Monster extends Decor implements Movable{
-    @Override
-    public String toString() {
-        return "Monster";
-    }
-    @Override
-    public boolean canMove(Direction direction){
-        return true;
-    }
-
-    @Override
-    public void doMove(Direction direction){
-
-    }
-}

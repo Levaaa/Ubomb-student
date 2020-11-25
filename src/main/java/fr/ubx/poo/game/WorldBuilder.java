@@ -32,8 +32,6 @@ public class WorldBuilder {
                 return new Tree();
             case Box:
                 return new Box();
-            case Monster:
-                return new Monster();
             case BombNumberDec:
                 return new BombNbDec();
             case BombNumberInc:

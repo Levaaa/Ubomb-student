@@ -1,12 +1,14 @@
 /*
  * Copyright (c) 2020. Laurent Réveillère
  */
-/*
+
 package fr.ubx.poo.view.sprite;
 
+import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.Pane;
+
 
 public class SpriteMonster extends SpriteGameObject {
     private final ColorAdjust effect = new ColorAdjust();
@@ -22,4 +24,3 @@ public class SpriteMonster extends SpriteGameObject {
         setImage(ImageFactory.getInstance().getMonster(monster.getDirection()));
     }
 }
-*/

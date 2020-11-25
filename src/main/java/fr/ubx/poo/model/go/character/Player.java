@@ -25,6 +25,7 @@ public class Player extends GameObject implements Movable {
     private int bombs = 1;
     private int key = 0;
     private int nbAvailable = 1;
+    private boolean invincible = false;
 
     public int getRange() {
         return range;
@@ -40,6 +41,9 @@ public class Player extends GameObject implements Movable {
     }
     public void setnbAvailable(int nb) {
         this.nbAvailable = nb;
+    }
+    public void setLives(int nb) {
+        this.lives = nb;
     }
 
 
@@ -77,7 +81,6 @@ public class Player extends GameObject implements Movable {
             if (decor.toString() ==  "Box") {
                 return canMoveBox(direction, nextPos);
             }
-            if (decor.toString() ==  "Monster") lives --;
             if (decor.toString() ==  "Heart") { 
             	lives ++; 
                 world.clear(nextPos);
@@ -153,6 +156,23 @@ public class Player extends GameObject implements Movable {
     public boolean isAlive() {
         if (lives == 0) return !alive;
         return alive;
+    }
+
+    public void hurtPlayer(){
+        if (invincible == true) return;
+        this.lives --;
+        this.invincible = true;
+        System.out.println("invicible");
+        new java.util.Timer().schedule( 
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    invincible = false;
+                    System.out.println("not invicible");
+                }
+            }, 
+            1000 
+            );
     }
 
 }

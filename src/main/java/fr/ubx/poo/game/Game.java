@@ -10,13 +10,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
+import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.model.go.character.Player;
+
+
 
 public class Game {
 
     private final World world;
     private final Player player;
+    private List<Monster> monsters = new ArrayList<>();
     private final String worldPath;
     public int initPlayerLives;
     private int level = 1;
@@ -30,6 +36,10 @@ public class Game {
         this.level = level;
     }
 
+    public List<Monster> getMonsters() {
+        return this.monsters;
+    }
+
     public Game(String worldPath) {
         //load world
         LoadFromFile lvl = new LoadFromFile(level, worldPath);
@@ -37,6 +47,13 @@ public class Game {
         this.worldPath = worldPath;
         loadConfig(worldPath);
         Position positionPlayer = null;
+        List<Position> posMonsters = world.findMonster();
+        for (Position p : posMonsters){
+            monsters.add(new Monster(this, p));
+            System.out.println("un monstre a été ajouté");
+        }
+
+
         try {
             positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);

@@ -10,6 +10,7 @@ import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.Bomb;
+import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.model.go.character.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -26,13 +27,13 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public final class GameEngine {
 
     private static AnimationTimer gameLoop;
     private final String windowTitle;
     private final Game game;
     private final Player player;
+    private List<Monster> monsters = new ArrayList<>();
     private final List<Sprite> sprites = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
@@ -40,11 +41,13 @@ public final class GameEngine {
     private Stage stage;
     private Sprite spritePlayer;
     private final List<Sprite> spritesBomb = new ArrayList<>();
+    private final List<Sprite> spritesMonster = new ArrayList<>();
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
+        this.monsters = game.getMonsters();
         initialize(stage, game);
         buildAndSetGameLoop();
     }
@@ -71,8 +74,11 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-        spritePlayer = SpriteFactory.createPlayer(layer, player);
+        spritePlayer = SpriteFactory.createPlayer(layer, player);    
 
+        for (Monster m : monsters){
+            spritesMonster.add(SpriteFactory.createMonster(layer, m));
+        }
     }
 
     protected final void buildAndSetGameLoop() {
@@ -164,6 +170,7 @@ public final class GameEngine {
         spritesBomb.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
         // last rendering to have player in the foreground
+        spritesMonster.forEach(Sprite::render);
         spritePlayer.render();
     }
 

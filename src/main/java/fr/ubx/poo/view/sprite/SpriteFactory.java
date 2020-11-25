@@ -23,8 +23,6 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(TREE), position);
         if (decor instanceof Box)
             return new SpriteDecor(layer, factory.get(BOX), position);
-        if (decor instanceof Monster)
-            return new SpriteDecor(layer, factory.get(MONSTER_DOWN), position);
         if (decor instanceof Princess)
             return new SpriteDecor(layer, factory.get(PRINCESS), position);
         if (decor instanceof BombNbDec)
@@ -58,9 +56,8 @@ public final class SpriteFactory {
         return new SpriteBomb(layer, bomb);
     }
 
-    /*
     public static Sprite createMonster(Pane layer, Monster monster) {
         return new SpriteMonster(layer, monster);
     }
-    */
+
 }
