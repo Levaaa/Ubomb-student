@@ -39,9 +39,9 @@ public class LoadFromFile {
     }
 
 
-    public LoadFromFile(int level, String path) {
+    public LoadFromFile(int level, String path, String prefix) {
         //charge le niveau depuis le fichier
-        path = path.concat("/level" + String.valueOf(level) + ".txt");
+        path = path.concat("/"+ prefix + String.valueOf(level) + ".txt");
         System.out.println(path);
 
         

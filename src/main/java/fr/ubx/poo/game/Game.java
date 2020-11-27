@@ -26,6 +26,7 @@ public class Game {
     private final String worldPath;
     public int initPlayerLives;
     private int level = 1;
+    private String prefixLevel;
 
 
     public int getLevel() {
@@ -41,11 +42,11 @@ public class Game {
     }
 
     public Game(String worldPath) {
+        loadConfig(worldPath);
         //load world
-        LoadFromFile lvl = new LoadFromFile(level, worldPath);
+        LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
         world = new WorldFromFile(lvl.getMapEntities());
         this.worldPath = worldPath;
-        loadConfig(worldPath);
         Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
         for (Position p : posMonsters){
@@ -70,6 +71,9 @@ public class Game {
             // load the configuration file
             prop.load(input);
             initPlayerLives = Integer.parseInt(prop.getProperty("lives", "3"));
+            this.prefixLevel = prop.getProperty("prefix", "level");
+            
+
         } catch (IOException ex) {
             System.err.println("Error loading configuration");
         }
