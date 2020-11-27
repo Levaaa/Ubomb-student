@@ -167,7 +167,6 @@ public class Player extends GameObject implements Movable {
                 @Override
                 public void run() {
                     invincible = false;
-                    System.out.println("not invicible");
                 }
             }, 
             1000 

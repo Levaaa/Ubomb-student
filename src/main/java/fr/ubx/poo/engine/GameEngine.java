@@ -82,6 +82,7 @@ public final class GameEngine {
 
         for (Monster m : monsters){
             spritesMonster.add(SpriteFactory.createMonster(layer, m));
+            m.move();
         }
     }
 
@@ -178,8 +179,6 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
-
-        monstersMove();
     }
 
     private void render() {
@@ -192,12 +191,5 @@ public final class GameEngine {
 
     public void start() {
         gameLoop.start();
-    }
-
-    private void monstersMove(){
-        for(Monster m : monsters){
-            m.move();
-        }
-        return;
     }
 }
