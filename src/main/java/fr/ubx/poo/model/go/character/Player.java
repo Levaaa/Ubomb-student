@@ -158,6 +158,10 @@ public class Player extends GameObject implements Movable {
         return alive;
     }
 
+    public boolean isInvincible(){
+        return this.invincible;
+    }
+    
     public void hurtPlayer(){
         if (invincible == true) return;
         this.lives --;

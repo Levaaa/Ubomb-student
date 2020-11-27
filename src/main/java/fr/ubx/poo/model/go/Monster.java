@@ -15,7 +15,7 @@ public class Monster extends GameObject implements Movable {
 
     private final boolean alive = true;
     Direction direction;
-    private int speed = 0;
+    private int speed = 2;
     private Timer t = new Timer();
 
     public Monster(Game game, Position position) {
@@ -85,7 +85,7 @@ public class Monster extends GameObject implements Movable {
             t.cancel();
             if (alive && game.getPlayer().isWinner() == false && game.getPlayer().isAlive() == true){
                 t = new Timer();
-                t.schedule(new Move(), 1000);
+                t.schedule(new Move(), 1000/speed);
             } 
         }
     }
