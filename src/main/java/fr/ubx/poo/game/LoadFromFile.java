@@ -57,7 +57,6 @@ public class LoadFromFile {
                 for(int y = 0; y < width + 1; y++){
                     data = file.read();
                     char c = (char) data;
-                    System.out.print(c);
                     switch(c){
                         case '\n' :
                             break;
