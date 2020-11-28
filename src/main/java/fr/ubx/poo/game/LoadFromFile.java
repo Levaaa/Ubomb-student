@@ -49,13 +49,12 @@ public class LoadFromFile {
         System.out.println("w = " + width + " h = " + height);
         mapEntities = new WorldEntity[width][height];
 
-
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
 
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width + 1; x++){
+            for(int x = 0; x < height; x++){
+                for(int y = 0; y < width + 1; y++){
                     data = file.read();
                     char c = (char) data;
                     System.out.print(c);
