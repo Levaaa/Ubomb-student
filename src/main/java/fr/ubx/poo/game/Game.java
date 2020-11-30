@@ -105,6 +105,7 @@ public class Game {
         }
         try {
             positionPlayer = world.findPlayer();
+            player.setPosition(positionPlayer);
         } catch (PositionNotFoundException e) {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
