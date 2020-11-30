@@ -89,8 +89,9 @@ public class Game {
         return this.player;
     }
 
-    public void changeLevel(int newLevel) {
-    	level = newLevel;
+    public void changeLevel(boolean nextDoor) {
+    	if (nextDoor) level ++;
+    	else level --;
     	
     	if (worldsList.size() < level) {
     		LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
@@ -104,7 +105,7 @@ public class Game {
             monsters.add(new Monster(this, p));
         }
         try {
-            positionPlayer = world.findPlayer();
+            positionPlayer = world.findOpenedDoor(nextDoor);
             player.setPosition(positionPlayer);
         } catch (PositionNotFoundException e) {
             System.err.println("Position not found : " + e.getLocalizedMessage());
