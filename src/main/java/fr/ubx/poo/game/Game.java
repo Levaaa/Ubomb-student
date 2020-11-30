@@ -20,14 +20,15 @@ import fr.ubx.poo.model.go.character.Player;
 
 public class Game {
 
-    private final World world;
+    private World world;
     private final Player player;
     private List<Monster> monsters = new ArrayList<>();
     private final String worldPath;
     public int initPlayerLives;
     private int level = 1;
     private String prefixLevel;
-
+    private List<World> worldsList = new ArrayList<>();
+    
 
     public int getLevel() {
         return this.level;
@@ -45,7 +46,8 @@ public class Game {
         loadConfig(worldPath);
         //load world
         LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
-        world = new WorldFromFile(lvl.getMapEntities());
+        worldsList.add(new WorldFromFile(lvl.getMapEntities()));
+        world = worldsList.get(0);
         this.worldPath = worldPath;
         Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
@@ -87,5 +89,26 @@ public class Game {
         return this.player;
     }
 
+    public void changeLevel(int newLevel) {
+    	level = newLevel;
+    	
+    	if (worldsList.size() < level) {
+    		LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
+            worldsList.add(new WorldFromFile(lvl.getMapEntities()));
+    	}
 
+    	world = worldsList.get(level-1);
+    	Position positionPlayer = null;
+        List<Position> posMonsters = world.findMonster();
+        for (Position p : posMonsters){
+            monsters.add(new Monster(this, p));
+        }
+        try {
+            positionPlayer = world.findPlayer();
+        } catch (PositionNotFoundException e) {
+            System.err.println("Position not found : " + e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        }
+    	world.setChanged(true);
+    }
 }

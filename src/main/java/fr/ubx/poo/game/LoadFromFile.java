@@ -47,16 +47,17 @@ public class LoadFromFile {
         
         worldDim(level, path);
         System.out.println("w = " + width + " h = " + height);
-        mapEntities = new WorldEntity[width][height];
+        mapEntities = new WorldEntity[height][width];
 
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
 
-            for(int x = 0; x < height; x++){
-                for(int y = 0; y < width + 1; y++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width + 1; x++){
                     data = file.read();
                     char c = (char) data;
+                    System.out.print(c);
                     switch(c){
                         case '\n' :
                             break;
@@ -64,13 +65,13 @@ public class LoadFromFile {
                             this.mapEntities[y][x] = Empty;
                             break;
                         case 'B' :
-                            this.mapEntities[y][x] = Box;
+                        	this.mapEntities[y][x] = Box;
                             break;
                         case 'H' :
-                            this.mapEntities[y][x] = Heart;
+                        	this.mapEntities[y][x] = Heart;
                             break;
                         case 'K' :
-                            this.mapEntities[y][x] = Key;
+                        	this.mapEntities[y][x] = Key;
                             break;
                         case 'M' :
                             this.mapEntities[y][x] = Monster;
