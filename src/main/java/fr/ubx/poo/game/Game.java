@@ -28,6 +28,7 @@ public class Game {
     private int level = 1;
     private String prefixLevel;
     private List<World> worldsList = new ArrayList<>();
+    boolean changed = false;
     
 
     public int getLevel() {
@@ -111,6 +112,14 @@ public class Game {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
-    	world.setChanged(true);
+    	changed = true;
+    }
+    
+    public boolean getChanged() {
+    	return changed;
+    }
+    
+    public void setChanged(boolean b) {
+    	changed = b;
     }
 }
