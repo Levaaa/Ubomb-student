@@ -1,17 +1,18 @@
 package fr.ubx.poo.game;
 
+import fr.ubx.poo.model.Entity;
 import fr.ubx.poo.model.decor.*;
 
 import java.util.Hashtable;
 import java.util.Map;
 
 public class WorldBuilder {
-    private final Map<Position, Decor> grid = new Hashtable<>();
+    private final Map<Position, Entity> grid = new Hashtable<>();
 
     private WorldBuilder() {
     }
 
-    public static Map<Position, Decor> build(WorldEntity[][] raw, Dimension dimension) {
+    public static Map<Position, Entity> build(WorldEntity[][] raw, Dimension dimension) {
         WorldBuilder builder = new WorldBuilder();
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {

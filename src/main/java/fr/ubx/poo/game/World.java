@@ -4,6 +4,7 @@
 
 package fr.ubx.poo.game;
 
+import fr.ubx.poo.model.Entity;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.go.*;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class World {
-    private final Map<Position, Decor> grid;
+    private final Map<Position, Entity> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
     private boolean changed = false; 
@@ -59,7 +60,7 @@ public class World {
     }
 
     public Decor get(Position position) {
-        return grid.get(position);
+        return (Decor) grid.get(position);
     }
 
     public void set(Position position, Decor decor) {
@@ -72,11 +73,11 @@ public class World {
         changed = true;
     }
 
-    public void forEach(BiConsumer<Position, Decor> fn) {
+    public void forEach(BiConsumer<Position, Entity> fn) {
         grid.forEach(fn);
     }
 
-    public Collection<Decor> values() {
+    public Collection<Entity> values() {
         return grid.values();
     }
 

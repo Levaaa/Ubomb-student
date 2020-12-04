@@ -10,13 +10,15 @@ import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.layout.Pane;
+import fr.ubx.poo.model.Entity;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.go.*;
 
 public final class SpriteFactory {
-
-    public static Sprite createDecor(Pane layer, Position position, Decor decor) {
+    
+    public static Sprite createDecor(Pane layer, Position position, Entity entity) {
         ImageFactory factory = ImageFactory.getInstance();
+        Decor decor = (Decor) entity;
         if (decor instanceof Stone)
             return new SpriteDecor(layer, factory.get(STONE), position);
         if (decor instanceof Tree)
