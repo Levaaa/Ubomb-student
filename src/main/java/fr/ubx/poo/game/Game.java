@@ -28,7 +28,7 @@ public class Game {
     private int level = 1;
     private String prefixLevel;
     private List<World> worldsList = new ArrayList<>();
-    boolean changed = false;
+    boolean changed = false; //boolean changement de niveau
     
 
     public int getLevel() {

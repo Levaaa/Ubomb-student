@@ -171,32 +171,8 @@ public final class GameEngine {
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
         if (game.getChanged()) {
-        	Group root = new Group();
-            layer = new Pane();
-
-            int height = game.getWorld().dimension.height;
-            int width = game.getWorld().dimension.width;
-            int sceneWidth = width * Sprite.size;
-            int sceneHeight = height * Sprite.size;
-            Scene scene = new Scene(root, sceneWidth, sceneHeight + StatusBar.height);
-            scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
-
-            stage.setTitle(windowTitle);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-
-            input = new Input(scene);
-            root.getChildren().add(layer);
-            statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
-            // Create decor sprites
-            game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-            spritePlayer = SpriteFactory.createPlayer(layer, player);    
-
-            for (Monster m : monsters){
-                spritesMonster.add(SpriteFactory.createMonster(layer, m));
-                m.move();
-            }
+            stage.close();
+            initialize(stage, game);
             game.setChanged(false);
         }
 
