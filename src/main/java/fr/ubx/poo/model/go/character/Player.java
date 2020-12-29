@@ -23,7 +23,7 @@ public class Player extends GameObject implements Movable {
     private boolean winner;
     private int range = 10;
     private int bombs = 1;
-    private int key = 0;
+    private int key = 1;
     private int nbAvailable = 1;
     private boolean invincible = false;
 
@@ -110,8 +110,14 @@ public class Player extends GameObject implements Movable {
                 key ++;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "DoorNextOpened") game.changeLevel(true);
-            if (decor.toString() ==  "DoorPrevOpened") game.changeLevel(false);
+            if (decor.toString() ==  "DoorNextOpened"){
+                game.setBacking(false);
+                game.setChanged(true);
+            }            
+            if (decor.toString() ==  "DoorPrevOpened"){
+                game.setBacking(true);
+                game.setChanged(true);
+            }
 
             return true;
         }

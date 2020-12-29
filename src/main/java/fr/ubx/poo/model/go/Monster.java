@@ -6,6 +6,7 @@ import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.World;
+import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.decor.*;
 
 import java.util.Timer;
@@ -21,6 +22,7 @@ public class Monster extends GameObject implements Movable {
     public Monster(Game game, Position position) {
         super(game, position);
         this.direction = Direction.S;
+        System.out.println("Monster has been called booooooooo");
     }
 
     public Direction getDirection() {
@@ -32,6 +34,7 @@ public class Monster extends GameObject implements Movable {
     }
 
     public void getMove(){
+        searchPlayer();
         Direction nextMove = Direction.random();
         if (canMove(nextMove)){
             doMove(nextMove);
@@ -68,6 +71,29 @@ public class Monster extends GameObject implements Movable {
         }
         return false;
     }
+    public boolean canMove(Direction direction, Position pos){
+        Position nextPos = direction.nextPosition(pos);
+        World world = game.getWorld();
+        //collision avec les bords
+        if (nextPos.inside(world.dimension)){
+            Decor decor = world.get(nextPos);
+            if (decor == null) return true;
+            if (decor instanceof Stone) return false;
+            if (decor instanceof Tree) return false;
+            if (decor instanceof Box) return false;
+            if (decor instanceof Princess) return false;
+            if (decor instanceof BombNbDec) return true;
+            if (decor instanceof BombNbInc) return true;
+            if (decor instanceof BombRangeDec) return true;
+            if (decor instanceof BombRangeInc) return true;
+            if (decor instanceof DoorNextClosed) return false;
+            if (decor instanceof DoorNextOpened) return false;
+            if (decor instanceof DoorPrevOpened) return false;
+            if (decor instanceof Key) return true;
+            if (decor instanceof Heart) return true;
+        }
+        return false;
+    }
 
     @Override
     public void doMove(Direction direction) {
@@ -76,6 +102,56 @@ public class Monster extends GameObject implements Movable {
         if (direction != this.direction) {
             this.direction = direction;
         }
+    }
+
+    //Algorithme de Lee
+    private void searchPlayer(){
+        World world = this.game.getWorld();
+        boolean grid[][] = new boolean[world.dimension.height][world.dimension.width];
+        
+        for (int x = 0; x < world.dimension.width; x++) {
+            for (int y = 0; y < world.dimension.height; y++) {
+                grid[y][x] = false;
+            }
+        }
+        boolean found;
+        found = searchPlayerRec(this.getPosition(), game.getPlayer().getPosition(), grid,0);
+
+        System.out.println("found = " + found);
+    }
+
+    private boolean searchPlayerRec(Position pos, Position playerPos, boolean grid[][], int distance){
+        if (pos.equals(playerPos)){
+            return true;
+        }
+        grid[pos.y][pos.x] = true;
+        
+        
+        Direction direction = Direction.W;
+        Position newPos = direction.nextPosition(pos);
+        if (canMove(direction, pos) && !grid[newPos.y][newPos.x]){
+            if (searchPlayerRec(newPos, playerPos, grid, distance + 1)) return true;
+        }
+
+        direction = Direction.E;
+        newPos = direction.nextPosition(pos);
+        if (canMove(direction, pos) && !grid[newPos.y][newPos.x]){
+            if (searchPlayerRec(newPos, playerPos, grid, distance + 1)) return true;
+        }
+
+        direction = Direction.N;
+        newPos = direction.nextPosition(pos);
+        if (canMove(direction, pos) && !grid[newPos.y][newPos.x]){
+            if (searchPlayerRec(newPos, playerPos, grid, distance + 1)) return true;
+        }
+
+        direction = Direction.S;
+        newPos = direction.nextPosition(pos);
+        if (canMove(direction, pos) && !grid[newPos.y][newPos.x]){
+            if (searchPlayerRec(newPos, playerPos, grid, distance + 1)) return true;
+        }
+        
+        return false;
     }
 
     private class Move extends TimerTask{ 

@@ -46,6 +46,8 @@ public final class GameEngine {
     private Sprite spritePlayer;
     private final List<Sprite> spritesBomb = new ArrayList<>();
     private final List<Sprite> spritesMonster = new ArrayList<>();
+    private List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
+    
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -170,8 +172,34 @@ public final class GameEngine {
             game.getWorld().setChanged(false);
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
-        if (game.getChanged()) {
+        if (game.isChanged()) {
+            //met le niveau actuel dans la liste de mémoire (à l'indice level - 1)
+            if (memoryWorld.size() <= game.getLevel()) 
+                memoryWorld.add(game.getLevel() - 1, game.getWorld());
+            
+            //actualise le numero de level (le niveau où on va)
+            if (game.isBacking()) game.setLevel(game.getLevel() - 1);
+            else game.setLevel(game.getLevel() + 1);
+
+            //retrait monstres
+            monsters.clear();
+            spritesMonster.forEach(Sprite::remove); 
+
+            //retrait fenêtre courante
             stage.close();
+
+            //chargement du nouveau monde 
+            //vérifie s'il est en mémoire & le charge 
+            if (memoryWorld.size() >= game.getLevel()){
+                game.setWorld(memoryWorld.get(game.getLevel() - 1));
+            }
+
+            //sinon on va chercher le nouveau
+            else game.loadWorldFromFile();
+            
+            //met à jour les monstres & positions du joueur
+            game.changeLevel();
+
             initialize(stage, game);
             game.setChanged(false);
         }

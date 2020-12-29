@@ -24,16 +24,27 @@ public class SpritePlayer extends SpriteGameObject {
     public void updateImage() {
         Player player = (Player) go;
         if (player.isInvincible()){
+            System.out.println("got chlabada");
             
             ///////////////A corriger///////////////////
             effect.setBrightness(0.2);
+            effect.setSaturation(0.2);
             Image sprite = ImageFactory.getInstance().getPlayer(player.getDirection());
             ImageView view = new ImageView(sprite);
-            
-            view.setVisible(false);
-            
-            setImage(view.getImage());
-            return;
+            view.setEffect(effect);
+
+            /*
+            colorAdjust.setContrast(0.1);
+            colorAdjust.setHue(-0.05);
+            colorAdjust.setBrightness(0.1);
+            colorAdjust.setSaturation(0.2);
+
+            Image image = new Image("boat.jpg");
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(200);
+            imageView.setPreserveRatio(true);
+            imageView.setEffect(colorAdjust);
+            */
         }
         setImage(ImageFactory.getInstance().getPlayer(player.getDirection()));
     }

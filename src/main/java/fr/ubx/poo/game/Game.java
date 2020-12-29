@@ -27,8 +27,8 @@ public class Game {
     public int initPlayerLives;
     private int level = 1;
     private String prefixLevel;
-    private List<World> worldsList = new ArrayList<>();
-    boolean changed = false; //boolean changement de niveau
+    private boolean changed = false; //boolean changement de niveau
+    private boolean backing = false; //boolean changement de niveau pour savoir si on avance ou recule d'un niveau
     
 
     public int getLevel() {
@@ -47,8 +47,7 @@ public class Game {
         loadConfig(worldPath);
         //load world
         LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
-        worldsList.add(new WorldFromFile(lvl.getMapEntities()));
-        world = worldsList.get(0);
+        world = new WorldFromFile(lvl.getMapEntities());
         this.worldPath = worldPath;
         Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
@@ -86,40 +85,51 @@ public class Game {
         return world;
     }
 
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+
     public Player getPlayer() {
         return this.player;
     }
 
-    public void changeLevel(boolean nextDoor) {
-    	if (nextDoor) level ++;
-    	else level --;
-    	
-    	if (worldsList.size() < level) {
-    		LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
-            worldsList.add(new WorldFromFile(lvl.getMapEntities()));
-    	}
+    public void loadWorldFromFile(){
+        LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
+        world = new WorldFromFile(lvl.getMapEntities());
+    }
 
-    	world = worldsList.get(level-1);
+    public void changeLevel() {    	
     	Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
         for (Position p : posMonsters){
             monsters.add(new Monster(this, p));
         }
         try {
-            positionPlayer = world.findOpenedDoor(nextDoor);
+            positionPlayer = world.findOpenedDoor(backing);
             player.setPosition(positionPlayer);
         } catch (PositionNotFoundException e) {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
+        
     	changed = true;
     }
     
-    public boolean getChanged() {
+    public boolean isChanged() {
     	return changed;
     }
     
     public void setChanged(boolean b) {
     	changed = b;
     }
+    
+    public void setBacking(boolean b) {
+    	backing = b;
+    }
+
+    public boolean isBacking() {
+    	return backing;
+    }
+
 }
