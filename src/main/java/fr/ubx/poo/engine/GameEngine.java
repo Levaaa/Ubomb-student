@@ -84,7 +84,6 @@ public final class GameEngine {
 
         for (Monster m : monsters){
             spritesMonster.add(SpriteFactory.createMonster(layer, m));
-            m.move();
         }
     }
 
@@ -166,6 +165,11 @@ public final class GameEngine {
 
     private void update(long now) {
         player.update(now);
+        
+        for (Monster monster : monsters){
+            monster.timeCheck(now);
+        }
+
         if(game.getWorld().hasChanged()){
             sprites.forEach(Sprite::remove); 
             sprites.clear();
@@ -211,8 +215,7 @@ public final class GameEngine {
         if (player.isWinner()) {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
-        }
-        
+        }        
     }
 
     private void render() {

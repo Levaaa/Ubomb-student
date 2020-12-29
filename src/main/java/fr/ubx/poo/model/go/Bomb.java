@@ -34,6 +34,7 @@ public class Bomb extends GameObject {
         this.phase = phase;
     }
 
+
     //execute toute la séquence de la bombe 
     public void doExplosion(){
         t.schedule(new Decompte(), 1000);

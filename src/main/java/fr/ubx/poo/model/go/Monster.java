@@ -15,14 +15,14 @@ import java.util.TimerTask;
 public class Monster extends GameObject implements Movable {
 
     private final boolean alive = true;
-    Direction direction;
-    private int speed = 2;
-    private Timer t = new Timer();
+    Direction direction;    
+    private long timeCheck;
+    private boolean moving = false;
+
 
     public Monster(Game game, Position position) {
         super(game, position);
         this.direction = Direction.S;
-        System.out.println("Monster has been called booooooooo");
     }
 
     public Direction getDirection() {
@@ -33,19 +33,26 @@ public class Monster extends GameObject implements Movable {
         return alive;
     }
 
+    public void timeCheck(long now) {
+        if (!moving){
+            this.timeCheck = now;
+            moving = true;
+        }
+
+        if(now - timeCheck >= 1 * 1000000000){
+            getMove();
+            moving = false;
+        }
+    }
+
     public void getMove(){
         searchPlayer();
         Direction nextMove = Direction.random();
         if (canMove(nextMove)){
             doMove(nextMove);
         }else   
-            move();
+            getMove();
     }
-
-    public void move(){
-        t.schedule(new Move(), 1000);
-    }
-
 
     @Override
     public boolean canMove(Direction direction) {
@@ -104,7 +111,7 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
-    //Algorithme de Lee
+    //Bassé sur Algorithme de Lee
     private void searchPlayer(){
         World world = this.game.getWorld();
         boolean grid[][] = new boolean[world.dimension.height][world.dimension.width];
@@ -119,7 +126,6 @@ public class Monster extends GameObject implements Movable {
 
         System.out.println("found = " + found);
     }
-
     private boolean searchPlayerRec(Position pos, Position playerPos, boolean grid[][], int distance){
         if (pos.equals(playerPos)){
             return true;
@@ -154,16 +160,5 @@ public class Monster extends GameObject implements Movable {
         return false;
     }
 
-    private class Move extends TimerTask{ 
-
-        public void run(){
-            getMove();
-            t.cancel();
-            if (alive && game.getPlayer().isWinner() == false && game.getPlayer().isAlive() == true){
-                t = new Timer();
-                t.schedule(new Move(), 1000/speed);
-            } 
-        }
-    }
 }
 
