@@ -124,7 +124,7 @@ public class Monster extends GameObject implements Movable {
         boolean found;
         found = searchPlayerRec(this.getPosition(), game.getPlayer().getPosition(), grid,0);
 
-        System.out.println("found = " + found");
+        System.out.println("found = " + found);
     }
     private boolean searchPlayerRec(Position pos, Position playerPos, boolean grid[][], int distance){
         if (pos.equals(playerPos)){
