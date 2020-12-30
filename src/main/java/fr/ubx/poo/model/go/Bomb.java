@@ -21,8 +21,12 @@ public class Bomb extends GameObject {
     private int phase = 4;
     private Timer t = new Timer();
 
-    public Bomb(Game game, Position position) {
+    private long timeCheck;
+    private boolean explosion = false;
+
+    public Bomb(Game game, Position position, long now) {
         super(game, position);
+        timeCheck = now;
     }
 
 
@@ -34,6 +38,18 @@ public class Bomb extends GameObject {
         this.phase = phase;
     }
 
+    public boolean isExploded(){
+        return explosion;
+    }
+
+    public void update(long now) {
+        if(!explosion && now - timeCheck >= 1 * 1000000000){
+            timeCheck = now;
+            phase --;
+            if (phase == 0) explosion = true; 
+        }
+
+    }
 
     //execute toute la séquence de la bombe 
     public void doExplosion(){
@@ -44,7 +60,6 @@ public class Bomb extends GameObject {
 
         public void run(){
             phase--;
-            System.out.println(phase);
             t.cancel();
             if(phase > -1){
                 t = new Timer();

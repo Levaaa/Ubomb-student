@@ -1,11 +1,15 @@
 World hashmap -> Decor en entity (qui incluera GO et décor)
               -> refaire les interactions entre player/bombes/monstres
 
-Bomb explosion -> supprimer les timers
+Bomb explosion -> supprimer les timers CHECK
 
-Player hurt -> supprimer timer
+Monster -> supprimer les timers CHECK
+
+Player hurt -> supprimer timer CHECK
 
 Coloration joueur quand perte de vie
+
+Monstre IA CHECK
 
 Changement de niveaux ->
     Problèmes :

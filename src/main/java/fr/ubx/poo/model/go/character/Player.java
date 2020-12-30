@@ -19,13 +19,15 @@ public class Player extends GameObject implements Movable {
     private final boolean alive = true;
     Direction direction;
     private boolean moveRequested = false;
-    private int lives = 1;
+    private int lives = 999;
     private boolean winner;
-    private int range = 10;
-    private int bombs = 1;
-    private int key = 1;
+    private int range = 999;
+    private int bombs = 999;
+    private int key = 999;
     private int nbAvailable = 1;
     private boolean invincible = false;
+    private long timeCheck;
+    private boolean gotHurt = false;
 
     public int getRange() {
         return range;
@@ -153,6 +155,15 @@ public class Player extends GameObject implements Movable {
             } 
         }
         moveRequested = false;
+
+        if (gotHurt){
+            this.timeCheck = now;
+            gotHurt = false;
+        }
+
+        if(invincible && now - timeCheck >= 1 * 1000000000){
+            invincible = false;
+        }
     }
 
     public boolean isWinner() {
@@ -172,15 +183,10 @@ public class Player extends GameObject implements Movable {
         if (invincible == true) return;
         this.lives --;
         this.invincible = true;
-        new java.util.Timer().schedule( 
-            new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    invincible = false;
-                }
-            }, 
-            1000 
-            );
+        this.gotHurt = true;
     }
 
+    public void useKey(){
+        key --;
+    }
 }

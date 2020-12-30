@@ -39,6 +39,7 @@ public final class GameEngine {
     private final Player player;
     private List<Monster> monsters = new ArrayList<>();
     private final List<Sprite> sprites = new ArrayList<>();
+    private List<Bomb> bombs = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
@@ -124,9 +125,9 @@ public final class GameEngine {
         if (input.isBomb()) {
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
-                Bomb bomb = new Bomb(game, player.getPosition());
+                Bomb bomb = new Bomb(game, player.getPosition(), now) ;
+                bombs.add(bomb);
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
-                bomb.doExplosion();
             }
         }
         if (input.isKey()){
@@ -136,8 +137,8 @@ public final class GameEngine {
             if (world.get(doorPosition) instanceof DoorNextClosed){
                 if (player.getKey() > 0){
                     world.set(doorPosition, new DoorNextOpened());
-                }
-                
+                    player.useKey();
+                }   
             }
         }
         input.clear();
@@ -167,7 +168,11 @@ public final class GameEngine {
         player.update(now);
         
         for (Monster monster : monsters){
-            monster.timeCheck(now);
+            monster.update(now);
+        }
+
+        for(Bomb bomb : bombs){
+            bomb.update(now);
         }
 
         if(game.getWorld().hasChanged()){

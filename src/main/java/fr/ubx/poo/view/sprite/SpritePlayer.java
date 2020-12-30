@@ -24,7 +24,6 @@ public class SpritePlayer extends SpriteGameObject {
     public void updateImage() {
         Player player = (Player) go;
         if (player.isInvincible()){
-            System.out.println("got chlabada");
             
             ///////////////A corriger///////////////////
             effect.setBrightness(0.2);
