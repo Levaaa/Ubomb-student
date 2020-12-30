@@ -9,8 +9,13 @@ import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.GameObject;
+import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.game.Game;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.ubx.poo.model.decor.*;
 
@@ -19,12 +24,12 @@ public class Player extends GameObject implements Movable {
     private final boolean alive = true;
     Direction direction;
     private boolean moveRequested = false;
-    private int lives = 999;
+    private int lives = 9;
     private boolean winner;
-    private int range = 999;
-    private int bombs = 999;
-    private int key = 999;
-    private int nbAvailable = 1;
+    private int range = 9;
+    private int bombs = 9;
+    private int key = 9;
+    private int nbAvailable = bombs;
     private boolean invincible = false;
     private long timeCheck;
     private boolean gotHurt = false;
@@ -74,6 +79,15 @@ public class Player extends GameObject implements Movable {
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
         World world = game.getWorld();
+
+        List<Bomb> bombList = game.getBombs();
+
+        for (Bomb bomb : bombList) {
+            if (nextPos.equals(bomb.getPosition())) {
+                return false;
+            }   
+        }
+
         //collision avec les bords
         if (nextPos.inside(world.dimension)){
             Decor decor = world.get(nextPos);
@@ -129,8 +143,15 @@ public class Player extends GameObject implements Movable {
     private boolean canMoveBox(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
+        List<Monster> monsters = game.getMonsters();
         //collision avec les bords
+        for (Monster monster : monsters) {
+            if (nextPos.equals(monster.getPosition())){
+                return false;
+            }   
+        }
         if (nextPos.inside(world.dimension)){
+            
             Decor decor = world.get(nextPos);
             if (decor == null){
                 world.setChanged(true);
@@ -164,6 +185,8 @@ public class Player extends GameObject implements Movable {
         if(invincible && now - timeCheck >= 1 * 1000000000){
             invincible = false;
         }
+
+        if (game.getWorld().get(getPosition()) instanceof Explosion) hurtPlayer();
     }
 
     public boolean isWinner() {

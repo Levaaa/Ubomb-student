@@ -7,12 +7,14 @@ package fr.ubx.poo.engine;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
+import fr.ubx.poo.view.sprite.SpriteDecor;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.decor.DoorNextClosed;
 import fr.ubx.poo.model.decor.DoorNextOpened;
+import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.Monster;
 import fr.ubx.poo.model.go.character.Player;
@@ -29,6 +31,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public final class GameEngine {
@@ -38,13 +41,12 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private List<Monster> monsters = new ArrayList<>();
-    private final List<Sprite> sprites = new ArrayList<>();
-    private List<Bomb> bombs = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
+    private final List<Sprite> sprites = new ArrayList<>();
     private final List<Sprite> spritesBomb = new ArrayList<>();
     private final List<Sprite> spritesMonster = new ArrayList<>();
     private List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
@@ -125,8 +127,8 @@ public final class GameEngine {
         if (input.isBomb()) {
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
-                Bomb bomb = new Bomb(game, player.getPosition(), now) ;
-                bombs.add(bomb);
+                Bomb bomb = new Bomb(game, player.getPosition(), now);
+                game.setBombs(bomb);
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
             }
         }
@@ -167,12 +169,29 @@ public final class GameEngine {
     private void update(long now) {
         player.update(now);
         
-        for (Monster monster : monsters){
+        Iterator<Monster> iteratorMonster = monsters.iterator();
+        while (iteratorMonster.hasNext()) {
+            Monster monster = iteratorMonster.next();
             monster.update(now);
+            monster.isAlive();
         }
 
-        for(Bomb bomb : bombs){
+        List<Bomb> bombs = game.getBombs();
+        Iterator<Bomb> iterator = bombs.iterator();
+        while (iterator.hasNext()) {
+            Bomb bomb = iterator.next();
             bomb.update(now);
+            if (bomb.isExploded()){
+                bomb.doExplosion();
+                List<Position> zone = bomb.getZone();
+                
+                for (Position position : zone) {
+                    game.getWorld().set(position, new Explosion());
+                }
+
+
+                iterator.remove();
+            }
         }
 
         if(game.getWorld().hasChanged()){

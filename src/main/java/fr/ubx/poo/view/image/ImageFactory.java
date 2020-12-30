@@ -29,7 +29,7 @@ public final class ImageFactory {
 
 
     private final ImageResource[] bombs = new ImageResource[]{
-        EXPLOSION, BOMB_1, BOMB_2, BOMB_3, BOMB_4, 
+        BOMB_1, BOMB_2, BOMB_3, BOMB_4, 
     };
 
     private ImageFactory() {
@@ -72,7 +72,7 @@ public final class ImageFactory {
     }
     
     public Image getBomb(int phase) {
-        if (phase >= 0 && phase < 5) return get(bombs[phase]);
+        if (phase >= 0 && phase < 4) return get(bombs[phase]);
         return null;
     }
 

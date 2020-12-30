@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 
 public class Monster extends GameObject implements Movable {
 
-    private final boolean alive = true;
+    private boolean alive = true;
     Direction direction;    
     private long timeCheck;
     private boolean moving = false;
@@ -37,6 +37,10 @@ public class Monster extends GameObject implements Movable {
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public void kill() {
+        this.alive = false;
     }
 
     public void update(long now) {
@@ -81,6 +85,14 @@ public class Monster extends GameObject implements Movable {
     public boolean canMove(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
+        List<Bomb> bombList = game.getBombs();
+
+        for (Bomb bomb : bombList) {
+            if (nextPos.equals(bomb.getPosition())) {
+                return false;
+            }   
+        }
+
         //collision avec les bords
         if (nextPos.inside(world.dimension)){
             Decor decor = world.get(nextPos);
@@ -114,8 +126,7 @@ public class Monster extends GameObject implements Movable {
     /*
     IA Basée sur l'algorithme A*.
 
-
-    https://www.createursdemondes.fr/2015/03/pathfinding-algorithmes-en-a/#:~:text=L'algorithme%20de%20recherche%20A,algorithme%20utilis%C3%A9%20en%20intelligence%20artificielle.
+    https://www.createursdemondes.fr/2015/03/pathfinding-algorithmes-en-a/
 
     A chaque itération, A* va tenter de prendre le chemin le plus court pour aller d’une position Src à une position Dst.
 
@@ -186,6 +197,9 @@ public class Monster extends GameObject implements Movable {
     private boolean pathfinder(){
         Position startPos = getPosition();
         Position endPos = game.getPlayer().getPosition();
+
+        if (startPos.equals(endPos)) return false;
+
         List<Node> openList = new ArrayList<>();
         List<Node> closeList = new ArrayList<>();
 
