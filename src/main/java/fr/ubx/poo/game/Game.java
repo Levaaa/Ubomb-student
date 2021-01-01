@@ -33,22 +33,42 @@ public class Game {
     private boolean backing = false; //boolean changement de niveau pour savoir si on avance ou recule d'un niveau
     
 
+    
+    /** 
+     * @return int
+     */
     public int getLevel() {
         return this.level;
     }
 
+    
+    /** 
+     * @param level
+     */
     public void setLevel(int level) {
         this.level = level;
     }
 
+    
+    /** 
+     * @return List<Monster>
+     */
     public List<Monster> getMonsters() {
         return this.monsters;
     }
 
+    
+    /** 
+     * @return List<Bomb>
+     */
     public List<Bomb> getBombs() {
         return this.bombs;
     }
 
+    
+    /** 
+     * @param bomb
+     */
     public void setBombs(Bomb bomb) {
         bombs.add(bomb);
     }
@@ -73,10 +93,18 @@ public class Game {
         }
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getInitPlayerLives() {
         return initPlayerLives;
     }
 
+    
+    /** 
+     * @param path
+     */
     private void loadConfig(String path) {
         try (InputStream input = new FileInputStream(new File(path, "config.properties"))) {
             Properties prop = new Properties();
@@ -91,24 +119,42 @@ public class Game {
         }
     }
 
+    
+    /** 
+     * @return World
+     */
     public World getWorld() {
         return world;
     }
 
+    
+    /** 
+     * @param world
+     */
     public void setWorld(World world) {
         this.world = world;
     }
 
 
+    
+    /** 
+     * @return Player
+     */
     public Player getPlayer() {
         return this.player;
     }
 
+    /**
+     * Mets dans la variable world le monde depuis le fichier correspondant.
+     */
     public void loadWorldFromFile(){
         LoadFromFile lvl = new LoadFromFile(level, worldPath, prefixLevel);
         world = new WorldFromFile(lvl.getMapEntities());
     }
 
+    /**
+     *  Recherche les positions des monstres et de la nouvelle position du joueur du monde en cours de chargement.
+     */
     public void changeLevel() {    	
     	Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
@@ -131,18 +177,34 @@ public class Game {
     	changed = true;
     }
     
+    
+    /** 
+     * @return boolean
+     */
     public boolean isChanged() {
     	return changed;
     }
     
+    
+    /** 
+     * @param b
+     */
     public void setChanged(boolean b) {
     	changed = b;
     }
     
+    
+    /** 
+     * @param b
+     */
     public void setBacking(boolean b) {
     	backing = b;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean isBacking() {
     	return backing;
     }
