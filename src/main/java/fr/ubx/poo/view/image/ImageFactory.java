@@ -43,6 +43,11 @@ public final class ImageFactory {
         return Holder.instance;
     }
 
+    
+    /** 
+     * @param file
+     * @return Image
+     */
     private Image loadImage(String file) {
         return new Image(getClass().getResource("/images/" + file).toExternalForm());
     }
@@ -53,24 +58,57 @@ public final class ImageFactory {
         }
     }
 
+    
+    /** 
+     * @param img
+     * @return Image
+     */
     public Image get(ImageResource img) {
         return images[img.ordinal()];
     }
 
+    
+    /** 
+     * Retourne l'image des chiffres correspondant au chiffre donné.
+     * 
+     * @param i
+     * @return Image
+     */
     public Image getDigit(int i) {
         if (i < 0 || i > 9)
             throw new IllegalArgumentException();
         return get(digits[i]);
     }
 
+    
+    /** 
+     * Retourne l'image du joueur correspondant à sa direction actuelle.
+     * 
+     * @param direction
+     * @return Image
+     */
     public Image getPlayer(Direction direction) {
         return get(directions[direction.ordinal()]);
     }
 
+    
+    /** 
+     * Retourne l'image du monstre correspondant à sa direction actuelle.
+     * 
+     * @param direction
+     * @return Image
+     */
     public Image getMonster(Direction direction) {
         return get(monsters[direction.ordinal()]);
     }
     
+    
+    /** 
+     * Retourne l'image de la bombe correspondant à sa phase actuelle.
+     * 
+     * @param phase
+     * @return Image
+     */
     public Image getBomb(int phase) {
         if (phase >= 3 && phase <= 6) return get(bombs[phase - 3]);
         return null;

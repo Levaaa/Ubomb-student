@@ -14,6 +14,9 @@ public class SpriteBomb extends SpriteGameObject {
         updateImage();
     }
 
+    /**
+     * Met à jour l'image de la bombe en fonction de sa phase.
+     */
     @Override
     public void updateImage() {
         Bomb bomb = (Bomb) go;

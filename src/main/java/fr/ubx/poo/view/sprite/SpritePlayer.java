@@ -20,6 +20,10 @@ public class SpritePlayer extends SpriteGameObject {
         updateImage();
     }
 
+    /**
+     * Met à jour l'image du joueur en fonction de sa direction.
+     * Applique aussi un effet visuel si le joueur est invulnérable.
+     */
     @Override
     public void updateImage() {
         Player player = (Player) go;

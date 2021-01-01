@@ -18,6 +18,9 @@ public class SpriteMonster extends SpriteGameObject {
         updateImage();
     }
 
+    /**
+     * Met à jour l'image du monstre en fonction de sa direction.
+     */
     @Override
     public void updateImage() {
         Monster monster = (Monster) go;
