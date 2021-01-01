@@ -18,15 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bomb extends GameObject {
-    private int phase = 3;
+    private int phase = 6;
     /*
     differentes phases
+    6 sprite
+    5 sprite
+    4 sprite
     3 sprite
-    2 sprite
-    1 sprite
-    0 sprite
-    -1 explosion sprite
-    -2 suppresion delete sprite
+    2 explosion
+    1 ajout sprite 
+    0 suppresion delete sprite
     */
     private long timeCheck;
     private boolean explosion = false;
@@ -38,54 +39,91 @@ public class Bomb extends GameObject {
     }
 
 
+    
+    /** 
+     * @return int
+     */
     public int getPhase() {
         return this.phase;
     }
 
+    
+    /** 
+     * @param phase
+     */
     public void setPhase(int phase) {
         this.phase = phase;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean isExploded(){
-        return phase == -1;
+        return phase == 2;
     }
 
+    
+    /** 
+     * Getter de la zone d'explosion de la bombe.
+     * 
+     * @return List<Position>
+     */
     public List<Position> getZone(){
         return this.zone;
     }
 
+    
+    /** 
+     * Gère l'actualisation de la bombe en temps réel.
+     * Applique le changement de phase de la bombe
+     * 
+     * @param now Temps donnée par le moteur de jeu.
+     */
     public void update(long now) {
-        if(phase > -2 && now - timeCheck >= 1 * 1000000000){
+        if(phase >= 0 && now - timeCheck >= 1 * 1000000000){
             timeCheck = now;
             phase --;
-            if (phase == 0){
-                game.getPlayer().setnbAvailable(game.getPlayer().getnbAvailable() + 1);
-            }
+            System.out.println(phase);
         }
     }    
 
+    /**
+     * Applique l'explosion de la bombe dans les 4 directions cardinales.
+     * Met à jour le champs zone correspondant à la zone d'explosion de la bombe.
+     * 
+     */
     public void doExplosion() {
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S);
-        phase --; //permet de faire qu'une fois l'explosion dans update
+        phase = 1;//permet de faire qu'une fois l'explosion dans update
+        List<Bomb> bombsExploded = new ArrayList<>();
+        bombsExploded.add(this);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W, bombsExploded);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E, bombsExploded);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N, bombsExploded);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S, bombsExploded);
         System.out.println("explosion done");
     }
 
-    //execute juste la partie explosion avec les différentes interactions liées
-    private void makeExplosion(int range, Position pos, Direction direction){
+    
+    /** 
+     * Execute le traitement de l'explosion pour une position de cellule donnée.
+     * 
+     * Gère la destruction du décor.
+     * Gère la destruction des Monstres.
+     * 
+     * @param range Portée de la bombe restant à traiter.
+     * @param pos Position courrante à traiter.
+     * @param direction Direction de la propagation de l'explosion.
+     * @param bombsExploded Liste des bombes qui peuvent exploser en même temps que celle-ci.
+     */
+    private void makeExplosion(int range, Position pos, Direction direction, List<Bomb> bombsExploded){
         if (range == 0) return;
-
-        //diminution vie player
-        if (pos.equals(game.getPlayer().getPosition())) {
-            game.getPlayer().hurtPlayer();
-        }
 
         List<Bomb> bombList = game.getBombs();
         for (Bomb bomb : bombList) {
-            if (pos.equals(bomb.getPosition()) && !this.equals(bomb)) {
-                bomb.setPhase(-1);
+            if (pos.equals(bomb.getPosition()) && (!bombsExploded.contains(bomb))) {
+                bomb.setPhase(2);
+                bombsExploded.add(bomb);
                 return;
             }   
         }
@@ -94,7 +132,6 @@ public class Bomb extends GameObject {
         for (Monster monster : monsterList) {
             if (pos.equals(monster.getPosition())) {
                 monster.kill();
-                return;
             }   
         }
 
@@ -158,7 +195,7 @@ public class Bomb extends GameObject {
             if(!zone.contains(pos))  zone.add(pos);
             if (world.isInside(direction.nextPosition(pos))){
                 //world.set(pos, new Explosion());
-                makeExplosion(range - 1, direction.nextPosition(pos), direction);
+                makeExplosion(range - 1, direction.nextPosition(pos), direction, bombsExploded);
             }
             return;            
         }

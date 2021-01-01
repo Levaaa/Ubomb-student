@@ -10,31 +10,41 @@ import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.decor.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Map.Entry;
 
 public class Monster extends GameObject implements Movable {
 
     private boolean alive = true;
-    Direction direction;    
+    private Direction direction;    
     private long timeCheck;
     private boolean moving = false;
     private List<Direction> memoryPath = new ArrayList<>();
+    private boolean enableIA = false;
 
     public Monster(Game game, Position position) {
         super(game, position);
         this.direction = Direction.S;
     }
 
+    public Monster(Game game, Position position, boolean enableIA) {
+        super(game, position);
+        this.direction = Direction.S;
+        this.enableIA = enableIA;
+    }
+
+    
+    /** 
+     * @return Direction
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean isAlive() {
         return alive;
     }
@@ -42,7 +52,15 @@ public class Monster extends GameObject implements Movable {
     public void kill() {
         this.alive = false;
     }
-
+    
+    
+    /** 
+     * Gère l'actualisation du monstre en temps réel.
+     * Applique le mouvement.
+     * Applique les dommages si le personnage se trouve sur la même cellule que le joueur.
+     * 
+     * @param Temps donnée par le moteur de jeu.
+     */
     public void update(long now) {
         if (!moving){
             this.timeCheck = now;
@@ -59,9 +77,13 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    /**
+     * Trouve et applique le prochain déplacement du Monstre.
+     * Le déplacement est soit aléatoire ou se dirige sur le joueur
+     */
     public void getMove(){
         Direction nextMove;
-        if (pathfinder() || memoryPath.isEmpty() == false){
+        if (this.enableIA && (pathfinder() || memoryPath.isEmpty() == false)){
             nextMove = memoryPath.get(0);
             memoryPath.remove(0);
             if (canMove(nextMove)){
@@ -78,10 +100,26 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    
+    /** 
+     * Retourne un boolean indiquant si le mouvement d'une direction est applicable ou non.
+     * Il prend par défaut la position du monstre.
+     * 
+     * @param direction Direction du mouvement.
+     * @return boolean Vrai si le mouvement est appliquable, faux sinon.
+     */
     @Override
     public boolean canMove(Direction direction) {
         return canMove(direction, getPosition());
     }
+    
+    /** 
+     * Retourne un boolean indiquant si le mouvement d'une direction est applicable ou non.
+     * 
+     * @param direction Direction du mouvement.
+     * @param pos Position de départ.
+     * @return boolean Vrai si le mouvement est appliquable, faux sinon.
+     */
     public boolean canMove(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
@@ -114,6 +152,12 @@ public class Monster extends GameObject implements Movable {
         return false;
     }
 
+    
+    /** 
+     * Applique le mouvement vers une direction
+     * 
+     * @param direction Direction du mouvement.
+     */
     @Override
     public void doMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
@@ -162,6 +206,14 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    
+    /** 
+     * Retourne le premier élement de la liste qui contient le même champs pos donné en paramètre.
+     *  
+     * @param list Liste à inspecter.
+     * @param pos Position que doit contenir le Node.
+     * @return Node Résultat de la recherche.
+     */
     private Node containPos(List<Node> list, Position pos){
         for (Node node : list) {
             if (node.position.equals(pos)) return node;
@@ -169,7 +221,25 @@ public class Monster extends GameObject implements Movable {
         return null;
     }
 
-    //correspond au traitement du noeud dans la boucle (cf texte au dessus) pour garder le code de pathfinder lisible
+    
+    /**
+     * Applique l'iteration de l'algorithme de A*.
+     * Il vérifie pour un Node (currentNode)
+     *  
+     * Pour chaque nœud voisin : 
+     * Si c’est un obstacle, on passe (on ne traite pas ce nœud, il ne sera ajouté nulle part)
+     * S’il est déjà dans la liste fermée, on passe (on a déjà étudié ce trajet)
+     * S’il est déjà dans la liste ouverte, On vérifie sa qualité. Si la qualité actuelle est meilleure, c’est que le chemin est plus court en passant par le trajet actuel, donc on met à jour sa qualité dans la liste ouverte, et on met à jour son lien parent (avec noeud courant qui correspond à un meilleur chemin)
+     * Sinon, on ajoute ce nœud à la liste ouverte avec comme parent le nœud courant
+     * @https://www.createursdemondes.fr/2015/03/pathfinding-algorithmes-en-a/ (Description faite dans l'article)
+     * 
+     * @param direction Direction du mouvement.
+     * @param currentNode Noeud courant à traiter
+     * @param startPos Position de départ de l'algorithme
+     * @param endPos Position d'arrivée
+     * @param openList Liste ouverte
+     * @param closeList Liste fermée
+     */
     private void iteration(Direction direction, Node currentNode, Position startPos, Position endPos, List<Node> openList, List<Node> closeList){
         if(canMove(direction, currentNode.position)){
             Position newPos = direction.nextPosition(currentNode.position);
@@ -194,6 +264,14 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    
+    /** 
+     * Application de l'algorithme A*.
+     * Se charge de trouver un chemin depuis la position actuelle du monstre vers la position actuelle du joueur.
+     * Met en mémoire si un tel chemin existe (cf memoryPath)
+     * 
+     * @return boolean Vrai si un chemin existe entre ce Monstre et le Joueur, faux sinon.
+     */
     private boolean pathfinder(){
         Position startPos = getPosition();
         Position endPos = game.getPlayer().getPosition();

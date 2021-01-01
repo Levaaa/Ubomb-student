@@ -49,6 +49,7 @@ public final class GameEngine {
     private final List<Sprite> sprites = new ArrayList<>();
     private final List<Sprite> spritesBomb = new ArrayList<>();
     private final List<Sprite> spritesMonster = new ArrayList<>();
+    private final List<Sprite> spritesExplosion = new ArrayList<>();
     private List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
     
 
@@ -61,6 +62,11 @@ public final class GameEngine {
         buildAndSetGameLoop();
     }
 
+    
+    /** 
+     * @param stage
+     * @param game
+     */
     private void initialize(Stage stage, Game game) {
         this.stage = stage;
         Group root = new Group();
@@ -106,6 +112,10 @@ public final class GameEngine {
         };
     }
 
+    
+    /** 
+     * @param now
+     */
     private void processInput(long now) {
         if (input.isExit()) {
             gameLoop.stop();
@@ -146,6 +156,11 @@ public final class GameEngine {
         input.clear();
     }
 
+    
+    /** 
+     * @param msg
+     * @param color
+     */
     private void showMessage(String msg, Color color) {
         Text waitingForKey = new Text(msg);
         waitingForKey.setTextAlignment(TextAlignment.CENTER);
@@ -166,6 +181,21 @@ public final class GameEngine {
     }
 
 
+    
+    /** 
+     * Exécute les fonctions de mise à jour des éléments intéractifs du jeu :
+     * - le joueur
+     * - les monstres
+     * - les bombes
+     * 
+     * Supprime le monstre s'il est mort.
+     * Applique l'explosion de la bombe.
+     * Applique le changement de décor.
+     * Applique le changement de niveau.
+     * Regarde si le joueur a gagné ou perdu.
+     * 
+     * @param now Temps donnée par le moteur de jeu.
+     */
     private void update(long now) {
         player.update(now);
         
@@ -173,7 +203,16 @@ public final class GameEngine {
         while (iteratorMonster.hasNext()) {
             Monster monster = iteratorMonster.next();
             monster.update(now);
-            monster.isAlive();
+
+            if (!monster.isAlive()) {
+                spritesMonster.clear();
+                iteratorMonster.remove();
+
+                for (Monster m : monsters){
+                    spritesMonster.add(SpriteFactory.createMonster(layer, m));
+                }
+
+            }
         }
 
         List<Bomb> bombs = game.getBombs();
@@ -183,15 +222,22 @@ public final class GameEngine {
             bomb.update(now);
             if (bomb.isExploded()){
                 bomb.doExplosion();
+                game.getPlayer().setnbAvailable(game.getPlayer().getnbAvailable() + 1);
+            }
+            if (bomb.getPhase() == 1){
+                bomb.setPhase(0);
                 List<Position> zone = bomb.getZone();
-                
                 for (Position position : zone) {
-                    game.getWorld().set(position, new Explosion());
+                    spritesExplosion.add(SpriteFactory.createDecor(layer, position, new Explosion()));
                 }
-
-
+                System.out.println(zone);
+            }
+            if (bomb.getPhase() == -1){
+                spritesExplosion.clear();
+                System.out.println("removing");
                 iterator.remove();
             }
+            
         }
 
         if(game.getWorld().hasChanged()){
@@ -242,11 +288,15 @@ public final class GameEngine {
         }        
     }
 
+    /**
+     * Applique les fonctions de rendu GUI des élements du jeu.
+     */
     private void render() {
         spritesBomb.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
         // last rendering to have player in the foreground
         spritesMonster.forEach(Sprite::render);
+        spritesExplosion.forEach(Sprite::render);
         spritePlayer.render();
     }
 

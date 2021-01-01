@@ -72,7 +72,7 @@ public final class ImageFactory {
     }
     
     public Image getBomb(int phase) {
-        if (phase >= 0 && phase < 4) return get(bombs[phase]);
+        if (phase >= 3 && phase <= 6) return get(bombs[phase - 3]);
         return null;
     }
 

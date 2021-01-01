@@ -34,21 +34,45 @@ public class Player extends GameObject implements Movable {
     private long timeCheck;
     private boolean gotHurt = false;
 
+    
+    /** 
+     * @return int
+     */
     public int getRange() {
         return range;
     }
+    
+    /** 
+     * @return int
+     */
     public int getBombs() {
         return bombs;
     }
+    
+    /** 
+     * @return int
+     */
     public int getKey() {
         return key;
     }
+    
+    /** 
+     * @return int
+     */
     public int getnbAvailable() {
         return nbAvailable;
     }
+    
+    /** 
+     * @param nb
+     */
     public void setnbAvailable(int nb) {
         this.nbAvailable = nb;
     }
+    
+    /** 
+     * @param nb
+     */
     public void setLives(int nb) {
         this.lives = nb;
     }
@@ -60,14 +84,26 @@ public class Player extends GameObject implements Movable {
         this.lives = game.getInitPlayerLives();
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getLives() {
         return lives;
     }
 
+    
+    /** 
+     * @return Direction
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    
+    /** 
+     * @param direction
+     */
     public void requestMove(Direction direction) {
         if (direction != this.direction) {
             this.direction = direction;
@@ -75,6 +111,11 @@ public class Player extends GameObject implements Movable {
         moveRequested = true;
     }
 
+    
+    /** 
+     * @param direction
+     * @return boolean
+     */
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
@@ -140,6 +181,14 @@ public class Player extends GameObject implements Movable {
         return false;
     }
 
+    
+    /** 
+     * Cherche si une boîte à une position donnée peut être déplacée vers une direction donnée.
+     * 
+     * @param direction direction du mouvement.
+     * @param pos position de la boîte.
+     * @return boolean vrai si elle peut être bougée, faux sinon.
+     */
     private boolean canMoveBox(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
@@ -164,11 +213,26 @@ public class Player extends GameObject implements Movable {
 
     }
 
+    
+    /**
+     * Applique le mouvement dans la direction donnée.
+     * 
+     * @param direction Direction du mouvement.
+     */
     public void doMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
         setPosition(nextPos);
     }
 
+    
+    /** 
+     * Gère l'actualisation du joueur en temps réel.
+     * Applique le mouvement demandé.
+     * Applique l'invulnérabilité.
+     * Applique les dommages si le personnage se trouve sur une explosion.
+     * 
+     * @param now Temps donnée par le moteur de jeu.
+     */
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
@@ -189,26 +253,53 @@ public class Player extends GameObject implements Movable {
         if (game.getWorld().get(getPosition()) instanceof Explosion) hurtPlayer();
     }
 
+    
+    /** 
+     * Retourne vrai si le joueur a gagné, faux sinon.
+     * 
+     * @return boolean
+     */
     public boolean isWinner() {
         return winner;
     }
 
+    
+    /** 
+     * Retourne vrai si le joueur est en vie, faux sinon.
+     * 
+     * @return boolean
+     */
     public boolean isAlive() {
         if (lives == 0) return !alive;
         return alive;
     }
 
+    
+    /** 
+     * Retourne vrai si le joueur est invicible, faux sinon.
+     * 
+     * @return boolean
+     */
     public boolean isInvincible(){
         return this.invincible;
     }
     
+    /**
+     * Applique le processus de dommage au joueur :
+     * Il lui enlève un point de vie.
+     * Lui applique l'état invulnérable. 
+     * 
+     */
     public void hurtPlayer(){
         if (invincible == true) return;
         this.lives --;
         this.invincible = true;
         this.gotHurt = true;
     }
-
+    /**
+     * Appelée lors de l'ouverture d'une porte.
+     * Elle réduit de un le nombre de clés que possède le joueur. 
+     */
     public void useKey(){
         key --;
     }

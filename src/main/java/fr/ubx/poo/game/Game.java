@@ -113,7 +113,12 @@ public class Game {
     	Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
         for (Position p : posMonsters){
-            monsters.add(new Monster(this, p));
+            if (level > 1){
+                monsters.add(new Monster(this, p, true));
+            }else{
+                monsters.add(new Monster(this, p));
+            }
+            
         }
         try {
             positionPlayer = world.findOpenedDoor(backing);

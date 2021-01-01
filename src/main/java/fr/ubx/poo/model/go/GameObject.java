@@ -16,10 +16,18 @@ public abstract class GameObject extends Entity {
     private Position position;
 
 
+    
+    /** 
+     * @return Position
+     */
     public Position getPosition() {
         return position;
     }
 
+    
+    /** 
+     * @param position
+     */
     public void setPosition(Position position) {
         this.position = position;
     }
