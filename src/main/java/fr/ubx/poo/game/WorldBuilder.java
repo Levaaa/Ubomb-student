@@ -12,6 +12,14 @@ public class WorldBuilder {
     private WorldBuilder() {
     }
 
+    
+    /** 
+     * Fabrique une Map de touts les éléments de décors de la grille de départ avec pour clé la positions de ces dernières.
+     * 
+     * @param raw Grille de départ.
+     * @param dimension Dimmensions de la grille.
+     * @return Map<Position, Entity> Map créée.
+     */
     public static Map<Position, Entity> build(WorldEntity[][] raw, Dimension dimension) {
         WorldBuilder builder = new WorldBuilder();
         for (int x = 0; x < dimension.width; x++) {
@@ -25,6 +33,13 @@ public class WorldBuilder {
         return builder.grid;
     }
 
+    
+    /** 
+     * Retourne un nouvel objet Decor en fonction de son équivalent en WorldEntity.
+     * 
+     * @param entity L'élément à convertir
+     * @return Decor Nouveau décor créé
+     */
     private static Decor processEntity(WorldEntity entity) {
         switch (entity) {
             case Stone:

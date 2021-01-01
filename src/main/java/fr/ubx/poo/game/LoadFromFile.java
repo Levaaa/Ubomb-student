@@ -15,7 +15,13 @@ public class LoadFromFile {
     private int width;
     private int height;
 
-    public void worldDim(int level, String path){
+    
+    /** 
+     * Calcul les dimensions d'un niveau à partir du fichier correspondant au path donné
+     * 
+     * @param path
+     */
+    public void worldDim(String path){
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
@@ -38,15 +44,17 @@ public class LoadFromFile {
         }        
     }
 
-
+    /**
+     * Génère le tableau de WorldEntity à partir du fichier correspondant au path donné. 
+     * 
+     * @param level Numéro du niveau
+     * @param path Chemin du fichier
+     * @param prefix Préfixe du fichier du niveau 
+     */
     public LoadFromFile(int level, String path, String prefix) {
-        //charge le niveau depuis le fichier
         path = path.concat("/"+ prefix + String.valueOf(level) + ".txt");
-        System.out.println(path);
 
-        
-        worldDim(level, path);
-        System.out.println("w = " + width + " h = " + height);
+        worldDim(path);
         mapEntities = new WorldEntity[height][width];
 
         try{
@@ -57,7 +65,7 @@ public class LoadFromFile {
                 for(int x = 0; x < width + 1; x++){
                     data = file.read();
                     char c = (char) data;
-                    System.out.print(c);
+                    
                     switch(c){
                         case '\n' :
                             break;
@@ -120,6 +128,10 @@ public class LoadFromFile {
         }
     }
 
+    
+    /** 
+     * @return WorldEntity[][]
+     */
     public WorldEntity[][] getMapEntities() {
         return this.mapEntities;
     }    

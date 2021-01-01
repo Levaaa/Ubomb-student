@@ -114,6 +114,16 @@ public final class GameEngine {
 
     
     /** 
+     * Gère les différents input possibles : 
+     * Flèche haut    -> Tentative mouvement vers le haut
+     * Flèche bas     -> Tentative mouvement vers le bas 
+     * Flèche gauche  -> Tentative mouvement vers la gauche 
+     * Flèche droite  -> Tentative mouvement vers la droite
+     *
+     * Echap -> Fermer le jeu
+     * Space -> Poser une bombe
+     * Enter -> Utiliser une clé
+     * 
      * @param now
      */
     private void processInput(long now) {
@@ -295,7 +305,7 @@ public final class GameEngine {
         spritesBomb.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
         // last rendering to have player in the foreground
-        spritesMonster.forEach(Sprite::render);
+        spritesMonster.forEach(Sprite::render); 
         spritesExplosion.forEach(Sprite::render);
         spritePlayer.render();
     }
