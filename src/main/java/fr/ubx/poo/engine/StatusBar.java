@@ -79,6 +79,15 @@ public class StatusBar {
         return group;
     }
 
+    /**
+     * Met à jour la barre des status du jeu actuel.
+     * Vie
+     * Portée de bombe
+     * Nombre de bombes
+     * Nombre de clés
+     * 
+     * @param game Du jeu actuel
+     */
     public void update(Game game) {
         updateLevel(game.getLevel());
         liveValue.setText(String.valueOf(game.getPlayer().getLives()));
