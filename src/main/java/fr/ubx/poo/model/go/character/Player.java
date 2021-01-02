@@ -76,14 +76,12 @@ public class Player extends GameObject implements Movable {
     public void setLives(int nb) {
         this.lives = nb;
     }
-
-
+    
     public Player(Game game, Position position) {
         super(game, position);
         this.direction = Direction.S;
         this.lives = game.getInitPlayerLives();
     }
-
     
     /** 
      * @return int
@@ -91,7 +89,6 @@ public class Player extends GameObject implements Movable {
     public int getLives() {
         return lives;
     }
-
     
     /** 
      * @return Direction
@@ -99,7 +96,6 @@ public class Player extends GameObject implements Movable {
     public Direction getDirection() {
         return direction;
     }
-
     
     /** 
      * @param direction
@@ -110,7 +106,6 @@ public class Player extends GameObject implements Movable {
         }
         moveRequested = true;
     }
-
     
     /** 
      * @param direction
@@ -180,7 +175,6 @@ public class Player extends GameObject implements Movable {
         }
         return false;
     }
-
     
     /** 
      * Cherche si une boîte à une position donnée peut être déplacée vers une direction donnée.
@@ -212,8 +206,7 @@ public class Player extends GameObject implements Movable {
         return false;
 
     }
-
-    
+  
     /**
      * Applique le mouvement dans la direction donnée.
      * 
@@ -223,7 +216,6 @@ public class Player extends GameObject implements Movable {
         Position nextPos = direction.nextPosition(getPosition());
         setPosition(nextPos);
     }
-
     
     /** 
      * Gère l'actualisation du joueur en temps réel.
@@ -252,7 +244,6 @@ public class Player extends GameObject implements Movable {
 
         if (game.getWorld().get(getPosition()) instanceof Explosion) hurtPlayer();
     }
-
     
     /** 
      * Retourne vrai si le joueur a gagné, faux sinon.
@@ -262,7 +253,6 @@ public class Player extends GameObject implements Movable {
     public boolean isWinner() {
         return winner;
     }
-
     
     /** 
      * Retourne vrai si le joueur est en vie, faux sinon.
@@ -273,7 +263,6 @@ public class Player extends GameObject implements Movable {
         if (lives == 0) return !alive;
         return alive;
     }
-
     
     /** 
      * Retourne vrai si le joueur est invicible, faux sinon.
@@ -296,6 +285,7 @@ public class Player extends GameObject implements Movable {
         this.invincible = true;
         this.gotHurt = true;
     }
+    
     /**
      * Appelée lors de l'ouverture d'une porte.
      * Elle réduit de un le nombre de clés que possède le joueur. 

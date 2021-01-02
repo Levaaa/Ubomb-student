@@ -86,7 +86,6 @@ public class Monster extends GameObject implements Movable {
 
         //Si bloqué
         if (!canMove(Direction.N) && !canMove(Direction.S) && !canMove(Direction.W) && !canMove(Direction.E)){
-            System.out.println("Monstre keblo");
             return;
         }
 

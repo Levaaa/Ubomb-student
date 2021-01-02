@@ -190,8 +190,6 @@ public final class GameEngine {
         }.start();
     }
 
-
-    
     /** 
      * Exécute les fonctions de mise à jour des éléments intéractifs du jeu :
      * - le joueur
@@ -221,7 +219,6 @@ public final class GameEngine {
                 for (Monster m : monsters){
                     spritesMonster.add(SpriteFactory.createMonster(layer, m));
                 }
-
             }
         }
 
@@ -238,13 +235,14 @@ public final class GameEngine {
                 bomb.setPhase(0);
                 List<Position> zone = bomb.getZone();
                 for (Position position : zone) {
-                    spritesExplosion.add(SpriteFactory.createDecor(layer, position, new Explosion()));
+                    game.getWorld().set(position, new Explosion());
                 }
-                System.out.println(zone);
             }
             if (bomb.getPhase() == -1){
-                spritesExplosion.clear();
-                System.out.println("removing");
+                List<Position> zone = bomb.getZone();
+                for (Position position : zone) {
+                    game.getWorld().clear(position);
+                }
                 iterator.remove();
             }
             

@@ -30,15 +30,12 @@ public class Bomb extends GameObject {
     0 suppresion delete sprite
     */
     private long timeCheck;
-    private boolean explosion = false;
     private List<Position> zone = new ArrayList<>();
 
     public Bomb(Game game, Position position, long now) {
         super(game, position);
         timeCheck = now;
     }
-
-
     
     /** 
      * @return int
@@ -46,7 +43,6 @@ public class Bomb extends GameObject {
     public int getPhase() {
         return this.phase;
     }
-
     
     /** 
      * @param phase
@@ -54,15 +50,19 @@ public class Bomb extends GameObject {
     public void setPhase(int phase) {
         this.phase = phase;
     }
+    /** 
+     * @param phase
+     */
+    public void setTimeCheck(long now) {
+        this.timeCheck = now;
+    }
 
-    
     /** 
      * @return boolean
      */
     public boolean isExploded(){
         return phase == 2;
     }
-
     
     /** 
      * Getter de la zone d'explosion de la bombe.
@@ -72,7 +72,6 @@ public class Bomb extends GameObject {
     public List<Position> getZone(){
         return this.zone;
     }
-
     
     /** 
      * Gère l'actualisation de la bombe en temps réel.
@@ -84,7 +83,6 @@ public class Bomb extends GameObject {
         if(phase >= 0 && now - timeCheck >= 1 * 1000000000){
             timeCheck = now;
             phase --;
-            System.out.println(phase);
         }
     }    
 
@@ -97,13 +95,11 @@ public class Bomb extends GameObject {
         phase = 1;//permet de faire qu'une fois l'explosion dans update
         List<Bomb> bombsExploded = new ArrayList<>();
         bombsExploded.add(this);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W, bombsExploded);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E, bombsExploded);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N, bombsExploded);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S, bombsExploded);
-        System.out.println("explosion done");
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S);
     }
-
     
     /** 
      * Execute le traitement de l'explosion pour une position de cellule donnée.
@@ -114,16 +110,17 @@ public class Bomb extends GameObject {
      * @param range Portée de la bombe restant à traiter.
      * @param pos Position courrante à traiter.
      * @param direction Direction de la propagation de l'explosion.
-     * @param bombsExploded Liste des bombes qui peuvent exploser en même temps que celle-ci.
      */
-    private void makeExplosion(int range, Position pos, Direction direction, List<Bomb> bombsExploded){
+    private void makeExplosion(int range, Position pos, Direction direction){
         if (range == 0) return;
 
         List<Bomb> bombList = game.getBombs();
         for (Bomb bomb : bombList) {
-            if (pos.equals(bomb.getPosition()) && (!bombsExploded.contains(bomb))) {
+            if (bomb.getPhase() > 2 && pos.equals(bomb.getPosition())) {                
+                //active la phase d'explosion
                 bomb.setPhase(2);
-                bombsExploded.add(bomb);
+                //synchronise les bombes sur l'explosion initiale
+                bomb.setTimeCheck(this.timeCheck);
                 return;
             }   
         }
@@ -156,26 +153,21 @@ public class Bomb extends GameObject {
             if (decor instanceof BombNbDec){
                 world.clear(pos);
                 zone.add(pos);
-                //world.set(pos, new Explosion());
-                return;
             }
             if (decor instanceof BombNbInc){
                 world.clear(pos);
                 zone.add(pos);
-                //world.set(pos, new Explosion());
-                return;                
+                //world.set(pos, new Explosion());              
             }
             if (decor instanceof BombRangeDec){
                 world.clear(pos);
                 zone.add(pos);
                 //world.set(pos, new Explosion());
-                return;
             }
             if (decor instanceof BombRangeInc){
-                //world.clear(pos);
+                world.clear(pos);
                 zone.add(pos);
                 //world.set(pos, new Explosion());
-                return;
             }
             if (decor instanceof DoorNextClosed)
                 return;
@@ -189,17 +181,16 @@ public class Bomb extends GameObject {
                 world.clear(pos);
                 zone.add(pos);
                 //world.set(pos, new Explosion());
-                return;
             }
+            makeExplosion(range - 1, direction.nextPosition(pos), direction);
         }else{
             if(!zone.contains(pos))  zone.add(pos);
             if (world.isInside(direction.nextPosition(pos))){
                 //world.set(pos, new Explosion());
-                makeExplosion(range - 1, direction.nextPosition(pos), direction, bombsExploded);
+                makeExplosion(range - 1, direction.nextPosition(pos), direction);
             }
             return;            
         }
+        
     }
-
-
 }
