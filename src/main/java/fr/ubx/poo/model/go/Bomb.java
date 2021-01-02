@@ -51,7 +51,7 @@ public class Bomb extends GameObject {
         this.phase = phase;
     }
     /** 
-     * @param phase
+     * @param now 
      */
     public void setTimeCheck(long now) {
         this.timeCheck = now;

@@ -194,7 +194,7 @@ public final class GameEngine {
      * Exécute les fonctions de mise à jour des éléments intéractifs du jeu :
      * - le joueur
      * - les monstres
-     * - les bombes
+     * - les bombes.
      * 
      * Supprime le monstre s'il est mort.
      * Applique l'explosion de la bombe.
@@ -255,9 +255,11 @@ public final class GameEngine {
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
         if (game.isChanged()) {
+            System.out.println(memoryWorld);
             //met le niveau actuel dans la liste de mémoire (à l'indice level - 1)
-            if (memoryWorld.size() <= game.getLevel()) 
-                memoryWorld.add(game.getLevel() - 1, game.getWorld());
+            if (memoryWorld.size() <= game.getLevel() && !memoryWorld.contains(game.getWorld())){
+                memoryWorld.add(game.getWorld());
+            }
             
             //actualise le numero de level (le niveau où on va)
             if (game.isBacking()) game.setLevel(game.getLevel() - 1);
@@ -266,6 +268,7 @@ public final class GameEngine {
             //retrait monstres
             monsters.clear();
             spritesMonster.forEach(Sprite::remove); 
+            spritesExplosion.forEach(Sprite::remove);
 
             //retrait fenêtre courante
             stage.close();
@@ -302,9 +305,9 @@ public final class GameEngine {
     private void render() {
         spritesBomb.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
-        // last rendering to have player in the foreground
         spritesMonster.forEach(Sprite::render); 
         spritesExplosion.forEach(Sprite::render);
+        // last rendering to have player in the foreground
         spritePlayer.render();
     }
 
