@@ -7,37 +7,52 @@ package fr.ubx.poo.model.go;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.decor.*;
-
-import java.sql.Time;
-
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
-import fr.ubx.poo.model.Entity;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bomb extends GameObject {
+    /**
+     * On répartit le processus d'explosion de la bombe en 7 phases :
+     * 6) sprite (1ere seconde)
+     * 5) sprite (2eme seconde)
+     * 4) sprite (3eme seconde)
+     * 3) sprite (4eme seconde)
+     * 2) explosion (gestion interne de l'explosion)
+     * 1) ajout sprite (gestion GUI après avoir traiter l'explosion)
+     * 0) suppression sprite après la seconde d'explosion
+     * 
+     * A savoir que la phase 2 & 1 s'enchaîne directement à l'inverse des autres qui sont exécutées après 1 seconde.
+     */
     private int phase = 6;
-    /*
-    differentes phases
-    6 sprite
-    5 sprite
-    4 sprite
-    3 sprite
-    2 explosion
-    1 ajout sprite 
-    0 suppresion delete sprite
-    */
+    
+    
+    /**
+     * Permet de mettre en mémoire la dernière fois qu'on a exécuté une des phases de la bombe.
+     * (Pour veiller à bien attendre 1 seconde avant tout nouveau traitement)
+     */
     private long timeCheck;
+
+    /**
+     * Liste des coordonées de l'explosion de la bombe
+     */
     private List<Position> zone = new ArrayList<>();
 
+    /**
+     * Constructeur
+     * 
+     * @param game Partie actuelle
+     * @param position Position de la bombe
+     * @param now Temps au moment de la création
+     */
     public Bomb(Game game, Position position, long now) {
         super(game, position);
         timeCheck = now;
     }
     
     /** 
+     * Getter
      * @return int
      */
     public int getPhase() {
@@ -45,12 +60,14 @@ public class Bomb extends GameObject {
     }
     
     /** 
+     * Setter
      * @param phase
      */
     public void setPhase(int phase) {
         this.phase = phase;
     }
     /** 
+     * Setter
      * @param now 
      */
     public void setTimeCheck(long now) {
@@ -58,6 +75,7 @@ public class Bomb extends GameObject {
     }
 
     /** 
+     * Retourne vrai si la bombe est dans sa phase d'explosion, faux sinon.
      * @return boolean
      */
     public boolean isExploded(){
@@ -65,8 +83,7 @@ public class Bomb extends GameObject {
     }
     
     /** 
-     * Getter de la zone d'explosion de la bombe.
-     * 
+     * Getter
      * @return List<Position>
      */
     public List<Position> getZone(){
