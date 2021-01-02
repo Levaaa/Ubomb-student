@@ -26,6 +26,10 @@ public abstract class Sprite {
         return this.image;
     }
 
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
     public final void setImage(Image image) {
         if (this.image == null || this.image != image) {
             this.image = image;
@@ -40,8 +44,8 @@ public abstract class Sprite {
         if (imageView != null) {
             remove();
         }
-        updateImage();
         imageView = new ImageView(this.image);
+        updateImage();
         imageView.setX(getPosition().x * size);
         imageView.setY(getPosition().y * size);
         layer.getChildren().add(imageView);

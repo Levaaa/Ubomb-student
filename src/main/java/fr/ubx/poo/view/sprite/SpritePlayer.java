@@ -29,13 +29,14 @@ public class SpritePlayer extends SpriteGameObject {
         Player player = (Player) go;
         if (player.isInvincible()){
             
-            ///////////////A corriger///////////////////
-            effect.setBrightness(0.2);
-            effect.setSaturation(0.2);
-            Image sprite = ImageFactory.getInstance().getPlayer(player.getDirection());
-            ImageView view = new ImageView(sprite);
-            view.setEffect(effect);
+            effect.setBrightness(0.6);
+            effect.setSaturation(0.6);
+            
+            Image image = getImage();
+            ImageView imageView = new ImageView(image);
 
+            imageView.setEffect(effect);
+            setImageView(imageView);
             /*
             colorAdjust.setContrast(0.1);
             colorAdjust.setHue(-0.05);
