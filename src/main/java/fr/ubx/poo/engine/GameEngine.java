@@ -145,9 +145,11 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
+            System.out.println(memoryWorld);
+            System.out.println("bomb dropped in " + game.getWorld() + " world ");
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
-                Bomb bomb = new Bomb(game, player.getPosition(), now);
+                Bomb bomb = new Bomb(game, player.getPosition(), now, game.getLevel());
                 game.setBombs(bomb);
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
             }
@@ -213,6 +215,7 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
+                spritesMonster.forEach(Sprite::remove);
                 spritesMonster.clear();
                 iteratorMonster.remove();
 
@@ -227,18 +230,26 @@ public final class GameEngine {
         while (iterator.hasNext()) {
             Bomb bomb = iterator.next();
             bomb.update(now);
+            //gestion non GUI
             if (bomb.isExploded()){
-                bomb.doExplosion();
+                if (game.getLevel() != bomb.getLevel()) {
+                    System.out.println("bomb exploded in " + memoryWorld.get(bomb.getLevel() - 1) + " world");
+                    bomb.doExplosion(memoryWorld.get(bomb.getLevel() - 1));
+                    iterator.remove();
+                }else{    
+                    bomb.doExplosion();
+                }
                 game.getPlayer().setnbAvailable(game.getPlayer().getnbAvailable() + 1);
             }
-            if (bomb.getPhase() == 1){
+            //Gestion gui
+            if (bomb.getPhase() == 1 && game.getLevel() == bomb.getLevel()){
                 bomb.setPhase(0);
                 List<Position> zone = bomb.getZone();
                 for (Position position : zone) {
                     game.getWorld().set(position, new Explosion());
                 }
             }
-            if (bomb.getPhase() == -1){
+            if (bomb.getPhase() == -1 && game.getLevel() == bomb.getLevel()){
                 List<Position> zone = bomb.getZone();
                 for (Position position : zone) {
                     game.getWorld().clear(position);
@@ -255,7 +266,6 @@ public final class GameEngine {
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
         if (game.isChanged()) {
-            System.out.println(memoryWorld);
             //met le niveau actuel dans la liste de mémoire (à l'indice level - 1)
             if (memoryWorld.size() <= game.getLevel() && !memoryWorld.contains(game.getWorld())){
                 memoryWorld.add(game.getWorld());

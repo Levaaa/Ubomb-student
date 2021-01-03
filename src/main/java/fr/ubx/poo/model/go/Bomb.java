@@ -39,6 +39,8 @@ public class Bomb extends GameObject {
      */
     private List<Position> zone = new ArrayList<>();
 
+    private int level;
+
     /**
      * Constructeur
      * 
@@ -46,11 +48,20 @@ public class Bomb extends GameObject {
      * @param position Position de la bombe
      * @param now Temps au moment de la création
      */
-    public Bomb(Game game, Position position, long now) {
+    public Bomb(Game game, Position position, long now, int level) {
         super(game, position);
-        timeCheck = now;
+        this.timeCheck = now;
+        this.level = level;
     }
-    
+
+    /**
+     * Getter
+     * @return int
+     */
+    public int getLevel() {
+        return level;
+    }
+
     /** 
      * Getter
      * @return int
@@ -110,16 +121,25 @@ public class Bomb extends GameObject {
      */
     public void doExplosion() {
         phase = 1;//permet de faire qu'une fois l'explosion dans update
-        List<Bomb> bombsExploded = new ArrayList<>();
-        bombsExploded.add(this);
         makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W);
         makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E);
         makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N);
         makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S);
     }
-    
+
+    /**
+     * Applique l'explosion de la bombe dans les 4 directions cardinales dans le niveau spécifié.
+     * Met à jour le champs zone correspondant à la zone d'explosion de la bombe.
+     */
+    public void doExplosion(World world) {
+        phase = 1;//permet de faire qu'une fois l'explosion dans update
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W, world);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E, world);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N, world);
+        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S, world);
+    }
     /** 
-     * Execute le traitement de l'explosion pour une position de cellule donnée.
+     * Execute le traitement de l'explosion pour une position de cellule donnée, dans un monde donné.
      * 
      * Gère la destruction du décor.
      * Gère la destruction des Monstres.
@@ -127,9 +147,15 @@ public class Bomb extends GameObject {
      * @param range Portée de la bombe restant à traiter.
      * @param pos Position courrante à traiter.
      * @param direction Direction de la propagation de l'explosion.
+     * @param World Monde dans lequel effectuer l'explosion
      */
-    private void makeExplosion(int range, Position pos, Direction direction){
+    private void makeExplosion(int range, Position pos, Direction direction, World world){
         if (range == 0) return;
+
+        if (pos.equals(game.getPlayer().getPosition())) {
+            zone.add(pos);
+            return;
+        }
 
         List<Bomb> bombList = game.getBombs();
         for (Bomb bomb : bombList) {
@@ -145,12 +171,12 @@ public class Bomb extends GameObject {
         List<Monster> monsterList = game.getMonsters();
         for (Monster monster : monsterList) {
             if (pos.equals(monster.getPosition())) {
-                monster.kill();
+                zone.add(pos);
+                return;
             }   
         }
-
-        World world = game.getWorld();
         Decor decor = world.get(pos);
+        System.out.println("getting " + decor + " at " + pos);
         if (decor != null){
             if (decor instanceof Stone)
                 return;
@@ -195,6 +221,7 @@ public class Bomb extends GameObject {
             if (decor instanceof Key)
                 return;
             if (decor instanceof Heart){
+                System.out.println("delete l'arbre");
                 world.clear(pos);
                 zone.add(pos);
                 //world.set(pos, new Explosion());
@@ -209,5 +236,20 @@ public class Bomb extends GameObject {
             return;            
         }
         
+    }
+
+    
+    /** 
+     * Execute le traitement de l'explosion pour une position de cellule donnée.
+     * 
+     * Gère la destruction du décor.
+     * Gère la destruction des Monstres.
+     * 
+     * @param range Portée de la bombe restant à traiter.
+     * @param pos Position courrante à traiter.
+     * @param direction Direction de la propagation de l'explosion.
+     */
+    private void makeExplosion(int range, Position pos, Direction direction){
+        makeExplosion(range, pos, direction, game.getWorld());        
     }
 }

@@ -37,18 +37,6 @@ public class SpritePlayer extends SpriteGameObject {
 
             imageView.setEffect(effect);
             setImageView(imageView);
-            /*
-            colorAdjust.setContrast(0.1);
-            colorAdjust.setHue(-0.05);
-            colorAdjust.setBrightness(0.1);
-            colorAdjust.setSaturation(0.2);
-
-            Image image = new Image("boat.jpg");
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(200);
-            imageView.setPreserveRatio(true);
-            imageView.setEffect(colorAdjust);
-            */
         }
         setImage(ImageFactory.getInstance().getPlayer(player.getDirection()));
     }
