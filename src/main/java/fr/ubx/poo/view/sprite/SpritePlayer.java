@@ -29,15 +29,20 @@ public class SpritePlayer extends SpriteGameObject {
         Player player = (Player) go;
         if (player.isInvincible()){
             
+            //charge les effets
             effect.setBrightness(0.6);
             effect.setSaturation(0.6);
             
             Image image = getImage();
             ImageView imageView = new ImageView(image);
 
+            //applique les effets
             imageView.setEffect(effect);
+            
+            //le met à jour pour la fonction Sprite.render() 
             setImageView(imageView);
         }
+        //le met à jour l'image du joueur pour la fonction Sprite.render()
         setImage(ImageFactory.getInstance().getPlayer(player.getDirection()));
     }
 }

@@ -13,13 +13,13 @@ public final class ImageFactory {
     private final Image[] images;
 
     private final ImageResource[] directions = new ImageResource[]{
-            // Direction { N, E, S, W }
-            PLAYER_UP, PLAYER_RIGHT, PLAYER_DOWN, PLAYER_LEFT,
+        // Direction { N, E, S, W }
+        PLAYER_UP, PLAYER_RIGHT, PLAYER_DOWN, PLAYER_LEFT,
     };
 
     private final ImageResource[] digits = new ImageResource[]{
-            DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4,
-            DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
+        DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4,
+        DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
     };
     
     private final ImageResource[] monsters = new ImageResource[]{
@@ -29,6 +29,7 @@ public final class ImageFactory {
 
 
     private final ImageResource[] bombs = new ImageResource[]{
+        //Phases { décroissant }
         BOMB_1, BOMB_2, BOMB_3, BOMB_4, 
     };
 

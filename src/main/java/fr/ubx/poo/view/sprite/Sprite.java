@@ -22,22 +22,45 @@ public abstract class Sprite {
     }
 
 
+    
+    /** 
+     * Getter
+     * @return Image
+     */
     public Image getImage() {
         return this.image;
     }
 
+    
+    /** 
+     * Setter
+     * @param imageView
+     */
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
     }
 
+    
+    /** 
+     * Setter
+     * @param image
+     */
     public final void setImage(Image image) {
         if (this.image == null || this.image != image) {
             this.image = image;
         }
     }
 
+    
+    /** 
+     * 
+     */
     public abstract void updateImage();
 
+    
+    /** 
+     * @return Position
+     */
     public abstract Position getPosition();
 
     public final void render() {

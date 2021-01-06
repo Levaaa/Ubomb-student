@@ -24,11 +24,11 @@ public class Player extends GameObject implements Movable {
     private final boolean alive = true;
     Direction direction;
     private boolean moveRequested = false;
-    private int lives = 9;
+    private int lives = 3;
     private boolean winner;
-    private int range = 9;
-    private int bombs = 9;
-    private int key = 9;
+    private int range = 2;
+    private int bombs = 1;
+    private int key = 0;
     private int nbAvailable = bombs;
     private boolean invincible = false;
     private long timeCheck;
@@ -120,6 +120,9 @@ public class Player extends GameObject implements Movable {
 
         for (Bomb bomb : bombList) {
             if (nextPos.equals(bomb.getPosition())) {
+                // La bombe en phase 0 est toujours là mais a théoriquement explosé, 
+                //elle ne doit donc pas gêner le déplacement.
+                if (bomb.getPhase() == 0) return true;
                 return false;
             }   
         }
@@ -127,50 +130,49 @@ public class Player extends GameObject implements Movable {
         //collision avec les bords
         if (nextPos.inside(world.dimension)){
             Decor decor = world.get(nextPos);
+
+            //null <> rien sur la case
             if (decor == null) return true;
-            if (decor.toString() ==  "Stone") return false;
-            if (decor.toString() ==  "Tree") return false;
-            if (decor.toString() ==  "Box") {
-                return canMoveBox(direction, nextPos);
-            }
-            if (decor.toString() ==  "Heart") { 
+            if (decor instanceof Stone) return false;
+            if (decor instanceof Tree) return false;
+            if (decor instanceof Box) return canMoveBox(direction, nextPos);
+            if (decor instanceof Heart) { 
             	lives ++; 
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "Princess") winner = true;
-            if (decor.toString() ==  "BombNbDec"){
+            if (decor instanceof Princess) winner = true;
+            if (decor instanceof BombNbDec) {
                 if (bombs > 1) {
                     bombs --;
                     nbAvailable--;
                 }
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "BombNbInc") {
+            if (decor instanceof BombNbInc) {
                 bombs ++;
                 nbAvailable++;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "BombRangeDec") {
+            if (decor instanceof BombRangeDec) {
                 if (range > 1) range --;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "BombRangeInc"){
+            if (decor instanceof BombRangeInc) {
                 range ++;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "Key") {
+            if (decor instanceof Key) {
                 key ++;
                 world.clear(nextPos);
             }
-            if (decor.toString() ==  "DoorNextOpened"){
+            if (decor instanceof DoorNextOpened) {
                 game.setBacking(false);
                 game.setChanged(true);
             }            
-            if (decor.toString() ==  "DoorPrevOpened"){
+            if (decor instanceof DoorPrevOpened) {
                 game.setBacking(true);
                 game.setChanged(true);
             }
-
             return true;
         }
         return false;

@@ -69,7 +69,7 @@ public class Game {
     /** 
      * @param bomb
      */
-    public void setBombs(Bomb bomb) {
+    public void addBombs(Bomb bomb) {
         bombs.add(bomb);
     }
 

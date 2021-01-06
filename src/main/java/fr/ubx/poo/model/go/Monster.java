@@ -175,9 +175,33 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    /*////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            PARTIE IA
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     /*
-    IA Basée sur l'algorithme A*.
+    Description de l'IA :
 
+    L’IA sera plus ou moins réaliste de ce que ferait un monstre : 
+    tant qu’il a une idée d’où est le personnage, il va chercher à aller voir à cet endroit. 
+    Sinon il fera une sorte de “ronde de garde”. 
+
+    L’algorithme utilisé est celui de A* qui permet d’obtenir un chemin cohérent et assez rapide. 
+    J’ai repris les codes donnés par cette page. (première partie de l’article + vidéo à la fin)
+
+    Pour commencer, l’IA sera dotée d’une mémoire du dernier chemin valide pour atteindre le joueur.
+    Elle effectuera en priorité les mouvements qui sont dans sa mémoire.
+    Cette mémoire sera rafraîchie avant chaque déplacement afin d’optimiser le déplacement du monstre.
+    Si le chemin entre le Joueur et le Monstre vient à disparaître au moment du nouveau calcul, 
+    le monstre utilisera le chemin en mémoire s’il existe, sinon se déplacera aléatoirement. 
+    Et enfin, si lors du parcours du chemin de la mémoire il y a un imprévu, 
+    (càd un mouvement non possible) pour faciliter le codage, elle va juste abandonner le chemin qu'elle a en mémoire.
+
+    L’IA apparaît à partir du niveau 2 (peut être modifié dans Game.java)
+
+
+    Description de l'algorithme A* :
+    C'est la description donné sur un cours du site suivant. J'ai appliqué ces étapes en plus de la vidéo sur la même page
+    présentant l'algorithme de façon théorique.
     https://www.createursdemondes.fr/2015/03/pathfinding-algorithmes-en-a/
 
     A chaque itération, A* va tenter de prendre le chemin le plus court pour aller d’une position Src à une position Dst.
@@ -200,12 +224,40 @@ public class Monster extends GameObject implements Movable {
 
     Le “bon chemin” trouvé se retrouve en remontant le long des parents de nœuds
     */
+    /**
+     * Chaque cellules de la grille de jeu sera représenté par des noeuds. Qui sont ceux décrit ci-dessus. 
+     */
     private class Node {
+        /**
+         * Position de la cellule sur la grille de jeu
+         */
         public Position position;
+
+        /**
+         * Qualité (décrite dans l'algorithme) qui représente le coût de déplacement pour parvenir à ce noeud.
+         * Un déplacement vaut 1 de poids. 
+         */
         public int quality;
+
+        /**
+         * Noeud père, permettra de retracer le chemin solution.
+         */
         public Node parent;
+
+        /**
+         * Direction par laquelle on est arrivé, permet le retracage plus facile dans cette application de A*.
+         * Elle n'est initialement pas utilisée.
+         */
         public Direction direction;
         
+        /**
+         * Constructeur
+         * 
+         * @param position
+         * @param quality
+         * @param parent
+         * @param direction
+         */
         public Node(Position position, int quality, Node parent, Direction direction){
             this.position = position;
             this.quality = quality;

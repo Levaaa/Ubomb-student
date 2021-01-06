@@ -7,6 +7,7 @@ import java.io.File;
 
 import fr.ubx.poo.model.decor.*;
 import static fr.ubx.poo.game.WorldEntity.*;
+import fr.ubx.poo.game.WorldEntity;
 
 import java.io.FileNotFoundException;
 
@@ -65,7 +66,7 @@ public class LoadFromFile {
                 for(int x = 0; x < width + 1; x++){
                     data = file.read();
                     char c = (char) data;
-                    
+
                     switch(c){
                         case '\n' :
                             break;
@@ -119,8 +120,7 @@ public class LoadFromFile {
                             break;
                         default :
                             break;
-
-                    }
+                        }
                 }
             } 
         }catch (IOException e) {

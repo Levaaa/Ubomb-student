@@ -11,8 +11,6 @@ import javafx.scene.layout.Pane;
 
 
 public class SpriteMonster extends SpriteGameObject {
-    private final ColorAdjust effect = new ColorAdjust();
-
     public SpriteMonster(Pane layer, Monster monster) {
         super(layer, null, monster);
         updateImage();

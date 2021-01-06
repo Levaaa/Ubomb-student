@@ -151,12 +151,7 @@ public class Bomb extends GameObject {
      */
     private void makeExplosion(int range, Position pos, Direction direction, World world){
         if (range == 0) return;
-
-        if (pos.equals(game.getPlayer().getPosition())) {
-            zone.add(pos);
-            return;
-        }
-
+        
         List<Bomb> bombList = game.getBombs();
         for (Bomb bomb : bombList) {
             if (bomb.getPhase() > 2 && pos.equals(bomb.getPosition())) {                
@@ -166,6 +161,12 @@ public class Bomb extends GameObject {
                 bomb.setTimeCheck(this.timeCheck);
                 return;
             }   
+            if (bomb.getPhase() <= 2 && pos.equals(bomb.getPosition())) zone.add(pos);
+        }
+
+        if (pos.equals(game.getPlayer().getPosition())) {
+            zone.add(pos);
+            return;
         }
 
         List<Monster> monsterList = game.getMonsters();
@@ -176,7 +177,6 @@ public class Bomb extends GameObject {
             }   
         }
         Decor decor = world.get(pos);
-        System.out.println("getting " + decor + " at " + pos);
         if (decor != null){
             if (decor instanceof Stone)
                 return;
@@ -221,17 +221,16 @@ public class Bomb extends GameObject {
             if (decor instanceof Key)
                 return;
             if (decor instanceof Heart){
-                System.out.println("delete l'arbre");
                 world.clear(pos);
                 zone.add(pos);
                 //world.set(pos, new Explosion());
             }
-            makeExplosion(range - 1, direction.nextPosition(pos), direction);
+            makeExplosion(range - 1, direction.nextPosition(pos), direction, world);
         }else{
             if(!zone.contains(pos))  zone.add(pos);
             if (world.isInside(direction.nextPosition(pos))){
                 //world.set(pos, new Explosion());
-                makeExplosion(range - 1, direction.nextPosition(pos), direction);
+                makeExplosion(range - 1, direction.nextPosition(pos), direction, world);
             }
             return;            
         }

@@ -12,8 +12,10 @@ import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.DoorNextClosed;
 import fr.ubx.poo.model.decor.DoorNextOpened;
+import fr.ubx.poo.model.decor.DoorPrevOpened;
 import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.Monster;
@@ -94,7 +96,7 @@ public final class GameEngine {
         for (Monster m : monsters){
             spritesMonster.add(SpriteFactory.createMonster(layer, m));
         }
-    }
+   }
 
     protected final void buildAndSetGameLoop() {
         gameLoop = new AnimationTimer() {
@@ -145,12 +147,23 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-            System.out.println(memoryWorld);
-            System.out.println("bomb dropped in " + game.getWorld() + " world ");
+            //Pas de bombe déjà sur la case
+            List<Bomb> bombs = game.getBombs();
+            for (Bomb bomb : bombs) {
+                if (game.getPlayer().getPosition() == bomb.getPosition()) return;
+            }
+            Decor decor = game.getWorld().get(game.getPlayer().getPosition());
+            if (decor != null){
+                //pas de bombe sur les portes
+                if (decor instanceof DoorNextClosed) return;
+                if (decor instanceof DoorPrevOpened) return;
+            }
+
+            //Création de la bombe (GUI et non GUI)
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
                 Bomb bomb = new Bomb(game, player.getPosition(), now, game.getLevel());
-                game.setBombs(bomb);
+                game.addBombs(bomb);
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
             }
         }
@@ -209,6 +222,7 @@ public final class GameEngine {
     private void update(long now) {
         player.update(now);
         
+        //Update de tous les monstres
         Iterator<Monster> iteratorMonster = monsters.iterator();
         while (iteratorMonster.hasNext()) {
             Monster monster = iteratorMonster.next();
@@ -225,6 +239,7 @@ public final class GameEngine {
             }
         }
 
+        //Update de toutes les bombes
         List<Bomb> bombs = game.getBombs();
         Iterator<Bomb> iterator = bombs.iterator();
         while (iterator.hasNext()) {
@@ -232,9 +247,11 @@ public final class GameEngine {
             bomb.update(now);
             //gestion non GUI
             if (bomb.isExploded()){
+                //si la bombe se trouve dans un niveau autre que celui affiché
+                //on applique l'explosion dans ce monde.
                 if (game.getLevel() != bomb.getLevel()) {
-                    System.out.println("bomb exploded in " + memoryWorld.get(bomb.getLevel() - 1) + " world");
-                    bomb.doExplosion(memoryWorld.get(bomb.getLevel() - 1));
+                    World explosionWorld = memoryWorld.get(bomb.getLevel() - 1); 
+                    bomb.doExplosion(explosionWorld);
                     iterator.remove();
                 }else{    
                     bomb.doExplosion();
@@ -259,12 +276,15 @@ public final class GameEngine {
             
         }
 
+        //Update les décors (s'il y a eu un changement)
         if(game.getWorld().hasChanged()){
             sprites.forEach(Sprite::remove); 
             sprites.clear();
             game.getWorld().setChanged(false);
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
+
+        //Change de monde (s'il y a un changement)
         if (game.isChanged()) {
             //met le niveau actuel dans la liste de mémoire (à l'indice level - 1)
             if (memoryWorld.size() <= game.getLevel() && !memoryWorld.contains(game.getWorld())){
