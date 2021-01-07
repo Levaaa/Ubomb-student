@@ -152,7 +152,7 @@ public class Bomb extends GameObject {
     private void makeExplosion(int range, Position pos, Direction direction, World world){
         if (range == 0) return;
         
-        List<Bomb> bombList = game.getBombs();
+        List<Bomb> bombList = game.getWorld().getBombs();
         for (Bomb bomb : bombList) {
             if (bomb.getPhase() > 2 && pos.equals(bomb.getPosition())) {                
                 //active la phase d'explosion
@@ -169,7 +169,7 @@ public class Bomb extends GameObject {
             return;
         }
 
-        List<Monster> monsterList = game.getMonsters();
+        List<Monster> monsterList = game.getWorld().getMonsters();
         for (Monster monster : monsterList) {
             if (pos.equals(monster.getPosition())) {
                 zone.add(pos);
@@ -181,9 +181,6 @@ public class Bomb extends GameObject {
             if (decor instanceof Stone)
                 return;
             if (decor instanceof Tree){
-                world.clear(pos);
-                zone.add(pos);
-                //world.set(pos, new Explosion());
                 return;
             }
             if (decor instanceof Box){

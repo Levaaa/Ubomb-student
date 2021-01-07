@@ -42,7 +42,6 @@ public final class GameEngine {
     private final String windowTitle;
     private final Game game;
     private final Player player;
-    private List<Monster> monsters = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
@@ -52,14 +51,13 @@ public final class GameEngine {
     private final List<Sprite> spritesBomb = new ArrayList<>();
     private final List<Sprite> spritesMonster = new ArrayList<>();
     private final List<Sprite> spritesExplosion = new ArrayList<>();
-    private List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
+    private final List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
     
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
-        this.monsters = game.getMonsters();
         initialize(stage, game);
         buildAndSetGameLoop();
     }
@@ -93,8 +91,13 @@ public final class GameEngine {
         game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         spritePlayer = SpriteFactory.createPlayer(layer, player);    
 
+        List<Monster> monsters = game.getWorld().getMonsters();
         for (Monster m : monsters){
             spritesMonster.add(SpriteFactory.createMonster(layer, m));
+        }
+        List<Bomb> bombs = game.getWorld().getBombs();
+        for (Bomb bomb : bombs) {
+            spritesBomb.add(SpriteFactory.createBomb(layer, bomb));
         }
    }
 
@@ -148,7 +151,7 @@ public final class GameEngine {
         }
         if (input.isBomb()) {
             //Pas de bombe déjà sur la case
-            List<Bomb> bombs = game.getBombs();
+            List<Bomb> bombs = game.getWorld().getBombs();
             for (Bomb bomb : bombs) {
                 if (game.getPlayer().getPosition() == bomb.getPosition()) return;
             }
@@ -163,7 +166,7 @@ public final class GameEngine {
             if (player.getnbAvailable() > 0){
                 player.setnbAvailable(player.getnbAvailable() - 1);
                 Bomb bomb = new Bomb(game, player.getPosition(), now, game.getLevel());
-                game.addBombs(bomb);
+                game.getWorld().addBombs(bomb);
                 spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
             }
         }
@@ -223,16 +226,17 @@ public final class GameEngine {
         player.update(now);
         
         //Update de tous les monstres
+        List<Monster> monsters = game.getWorld().getMonsters();
         Iterator<Monster> iteratorMonster = monsters.iterator();
         while (iteratorMonster.hasNext()) {
             Monster monster = iteratorMonster.next();
             monster.update(now);
 
             if (!monster.isAlive()) {
+                //On supprime tout et remmet tous les monstres moins le mort.
                 spritesMonster.forEach(Sprite::remove);
                 spritesMonster.clear();
                 iteratorMonster.remove();
-
                 for (Monster m : monsters){
                     spritesMonster.add(SpriteFactory.createMonster(layer, m));
                 }
@@ -240,7 +244,7 @@ public final class GameEngine {
         }
 
         //Update de toutes les bombes
-        List<Bomb> bombs = game.getBombs();
+        List<Bomb> bombs = game.getWorld().getBombs();
         Iterator<Bomb> iterator = bombs.iterator();
         while (iterator.hasNext()) {
             Bomb bomb = iterator.next();
@@ -296,8 +300,8 @@ public final class GameEngine {
             else game.setLevel(game.getLevel() + 1);
 
             //retrait monstres
-            monsters.clear();
-            spritesMonster.forEach(Sprite::remove); 
+            //monsters.clear();
+            //spritesMonster.forEach(Sprite::remove); 
             spritesExplosion.forEach(Sprite::remove);
 
             //retrait fenêtre courante
@@ -307,13 +311,17 @@ public final class GameEngine {
             //vérifie s'il est en mémoire & le charge 
             if (memoryWorld.size() >= game.getLevel()){
                 game.setWorld(memoryWorld.get(game.getLevel() - 1));
+
+                //met à jour la position du joueur
+                game.changeLevel(false);
             }
 
             //sinon on va chercher le nouveau
-            else game.loadWorldFromFile();
-            
-            //met à jour les monstres & positions du joueur
-            game.changeLevel();
+            else {
+                game.loadWorldFromFile();
+                //met à jour les monstres & positions du joueur
+                game.changeLevel(true);
+            }
 
             initialize(stage, game);
             game.setChanged(false);

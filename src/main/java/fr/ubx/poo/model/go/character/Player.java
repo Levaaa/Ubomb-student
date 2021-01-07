@@ -26,9 +26,9 @@ public class Player extends GameObject implements Movable {
     private boolean moveRequested = false;
     private int lives = 3;
     private boolean winner;
-    private int range = 2;
-    private int bombs = 1;
-    private int key = 0;
+    private int range = 98;
+    private int bombs = 98;
+    private int key = 98;
     private int nbAvailable = bombs;
     private boolean invincible = false;
     private long timeCheck;
@@ -116,7 +116,7 @@ public class Player extends GameObject implements Movable {
         Position nextPos = direction.nextPosition(getPosition());
         World world = game.getWorld();
 
-        List<Bomb> bombList = game.getBombs();
+        List<Bomb> bombList = game.getWorld().getBombs();
 
         for (Bomb bomb : bombList) {
             if (nextPos.equals(bomb.getPosition())) {
@@ -154,7 +154,7 @@ public class Player extends GameObject implements Movable {
                 world.clear(nextPos);
             }
             if (decor instanceof BombRangeDec) {
-                if (range > 1) range --;
+                if (range > 2) range --;
                 world.clear(nextPos);
             }
             if (decor instanceof BombRangeInc) {
@@ -173,6 +173,9 @@ public class Player extends GameObject implements Movable {
                 game.setBacking(true);
                 game.setChanged(true);
             }
+            if (decor instanceof DoorNextClosed) {
+                return false;
+            }
             return true;
         }
         return false;
@@ -188,7 +191,7 @@ public class Player extends GameObject implements Movable {
     private boolean canMoveBox(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
-        List<Monster> monsters = game.getMonsters();
+        List<Monster> monsters = game.getWorld().getMonsters();
         //collision avec les bords
         for (Monster monster : monsters) {
             if (nextPos.equals(monster.getPosition())){
@@ -199,7 +202,6 @@ public class Player extends GameObject implements Movable {
             
             Decor decor = world.get(nextPos);
             if (decor == null){
-                world.setChanged(true);
                 world.clear(pos);
                 world.set(nextPos, new Box());
                 return true;

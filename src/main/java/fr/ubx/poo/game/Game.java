@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,6 @@ public class Game {
 
     private World world;
     private final Player player;
-    private List<Monster> monsters = new ArrayList<>();
-    private List<Bomb> bombs = new ArrayList<>();
     private final String worldPath;
     public int initPlayerLives;
     private int level = 1;
@@ -49,30 +48,6 @@ public class Game {
         this.level = level;
     }
 
-    
-    /** 
-     * @return List<Monster>
-     */
-    public List<Monster> getMonsters() {
-        return this.monsters;
-    }
-
-    
-    /** 
-     * @return List<Bomb>
-     */
-    public List<Bomb> getBombs() {
-        return this.bombs;
-    }
-
-    
-    /** 
-     * @param bomb
-     */
-    public void addBombs(Bomb bomb) {
-        bombs.add(bomb);
-    }
-
     public Game(String worldPath) {
         loadConfig(worldPath);
         //load world
@@ -81,8 +56,9 @@ public class Game {
         this.worldPath = worldPath;
         Position positionPlayer = null;
         List<Position> posMonsters = world.findMonster();
+        List<Monster> monsters = this.getWorld().getMonsters();
         for (Position p : posMonsters){
-            monsters.add(new Monster(this, p));
+            monsters.add(new Monster(this, p, false, 1));
         }
         try {
             positionPlayer = world.findPlayer();
@@ -154,18 +130,26 @@ public class Game {
 
     /**
      *  Recherche les positions des monstres et de la nouvelle position du joueur du monde en cours de chargement.
+     *
+     *  @param isDiscoveringNewWorld Booléen permettant de savoir si le monde a déjà été visité ou non, afin de savoir
+     *                              si on doit mettre les nouveaux monstres ou non. (Si c'est un monde déjà visité
+     *                              la liste monsters doit être dans le même état qu'à la sortie de ce monde)
      */
-    public void changeLevel() {    	
-    	Position positionPlayer = null;
-        List<Position> posMonsters = world.findMonster();
-        for (Position p : posMonsters){
-            if (level > 1){
-                monsters.add(new Monster(this, p, true));
-            }else{
-                monsters.add(new Monster(this, p));
+    public void changeLevel(boolean isDiscoveringNewWorld) {    	
+        Position positionPlayer = null;
+        if (isDiscoveringNewWorld){
+            List<Position> posMonsters = world.findMonster();
+            List<Monster> monsters = this.getWorld().getMonsters();
+            for (Position p : posMonsters){
+                if (level > 1){
+                    monsters.add(new Monster(this, p, true, new Random().nextInt(2) + 1));//Random entre 1 et 3 (inclu)
+                }else{
+                    monsters.add(new Monster(this, p));
+                }
+                
             }
-            
         }
+
         try {
             positionPlayer = world.findOpenedDoor(backing);
             player.setPosition(positionPlayer);

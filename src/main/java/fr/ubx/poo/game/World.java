@@ -21,6 +21,8 @@ public class World {
     private final WorldEntity[][] raw;
     public final Dimension dimension;
     private boolean changed = false; 
+    private final List<Monster> monsters = new ArrayList<>();
+    private final List<Bomb> bombs = new ArrayList<>();
 
     public World(WorldEntity[][] raw) {
         this.raw = raw;
@@ -44,7 +46,29 @@ public class World {
         this.changed = bool; 
     }
 
-    
+
+    /** 
+     * @return List<Monster>
+     */
+    public List<Monster> getMonsters() {
+        return this.monsters;
+    }
+
+    /** 
+     * @return List<Bomb>
+     */
+    public List<Bomb> getBombs() {
+        return this.bombs;
+    }
+
+        
+    /** 
+     * @param bomb
+     */
+    public void addBombs(Bomb bomb) {
+        bombs.add(bomb);
+    }
+
     /** 
      * Cherche la position dans la grille de dépat (raw) la position du joueur.
      * 

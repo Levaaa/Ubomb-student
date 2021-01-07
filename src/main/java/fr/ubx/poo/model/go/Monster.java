@@ -15,22 +15,79 @@ import java.util.List;
 
 public class Monster extends GameObject implements Movable {
 
+    /**
+     * Booléen si le monstre est vivant.
+     */
     private boolean alive = true;
-    private Direction direction;    
-    private long timeCheck;
-    private boolean moving = false;
-    private List<Direction> memoryPath = new ArrayList<>();
-    private boolean enableIA = false;
 
+    /**
+     * Direction du monstre.
+     */
+    private Direction direction; 
+    
+    /**
+     * Temps (en ms) du dernier traitement en date.
+     */
+    private long timeCheck;
+
+    /**
+     * Booléen pour savoir si on est en phase d'attante avant le prochain mouvement.
+     */
+    private boolean moving = false;
+
+    /**
+     * Mémoire du dernier chemin trouvé vers le joueur. [Module IA]
+     */
+    private List<Direction> memoryPath = new ArrayList<>();
+
+    /**
+     * Booléen d'activation de l'IA du monstre.
+     */
+    private final boolean enableIA;
+
+    /**
+     * Vitesse du monstre.
+     */
+    private final double speed;
+
+    /**
+     * Constructeur par défaut 
+     * vitesse de base
+     * IA désactivée
+     * 
+     * @param game
+     * @param position
+     */
     public Monster(Game game, Position position) {
         super(game, position);
         this.direction = Direction.S;
+        enableIA = false;
+        speed = 1;
     }
 
-    public Monster(Game game, Position position, boolean enableIA) {
+    /**
+     * Constructeur complet 
+     * Choix possible de la vitesse (1, 2 ou 3). Sinon par défaut 1.
+     * Choix d'activation de l'IA
+     * 
+     * La vitesse est directement convertie de coefficient qui sera appliqué au temps entre 2 déplacements.
+     * vitesse : 
+     * 1 -> 1   sec
+     * 2 -> 0.8 sec
+     * 3 -> 0.6 sec
+     * 
+     * @param game
+     * @param position
+     * @param enableIA
+     * @param speed
+     */
+    public Monster(Game game, Position position, boolean enableIA, double speed) {
         super(game, position);
         this.direction = Direction.S;
         this.enableIA = enableIA;
+        if (speed == 2) this.speed = 0.8;
+        else if (speed == 3) this.speed = 0.6;
+        else this.speed = 1;
     }
 
     
@@ -67,7 +124,7 @@ public class Monster extends GameObject implements Movable {
             moving = true;
         }
 
-        if(now - timeCheck >= 1 * 1000000000){
+        if(now - timeCheck >= speed * 1000000000){
             getMove();
             moving = false;
         }
@@ -131,7 +188,7 @@ public class Monster extends GameObject implements Movable {
     public boolean canMove(Direction direction, Position pos){
         Position nextPos = direction.nextPosition(pos);
         World world = game.getWorld();
-        List<Bomb> bombList = game.getBombs();
+        List<Bomb> bombList = game.getWorld().getBombs();
 
         for (Bomb bomb : bombList) {
             if (nextPos.equals(bomb.getPosition())) {
