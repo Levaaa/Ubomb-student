@@ -3,10 +3,10 @@ SSS_S_SSSS__
 B___SBS__S__
 ____SBS__S__
 _B__SSS_KS__
-____P____S__
+____P____S_X
 _TBT_____S__
 _TTT__+-_B__
-_________B__
+__X______B__
 BSSSSBBSSSB_
 __n____M____
 ___<___>_S__

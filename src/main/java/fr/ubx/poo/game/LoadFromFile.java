@@ -61,7 +61,7 @@ public class LoadFromFile {
         try{
             BufferedReader file = new BufferedReader(new FileReader(path));
             int data;
-
+            
             for(int y = 0; y < height; y++){
                 for(int x = 0; x < width + 1; x++){
                     data = file.read();
@@ -118,6 +118,8 @@ public class LoadFromFile {
                         case '-':
                             this.mapEntities[y][x] = BombNumberDec;
                             break;
+                        case 'X':
+                            this.mapEntities[y][x] = Malediction;
                         default :
                             break;
                         }

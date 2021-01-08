@@ -150,25 +150,7 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-            //Pas de bombe déjà sur la case
-            List<Bomb> bombs = game.getWorld().getBombs();
-            for (Bomb bomb : bombs) {
-                if (game.getPlayer().getPosition() == bomb.getPosition()) return;
-            }
-            Decor decor = game.getWorld().get(game.getPlayer().getPosition());
-            if (decor != null){
-                //pas de bombe sur les portes
-                if (decor instanceof DoorNextClosed) return;
-                if (decor instanceof DoorPrevOpened) return;
-            }
-
-            //Création de la bombe (GUI et non GUI)
-            if (player.getnbAvailable() > 0){
-                player.setnbAvailable(player.getnbAvailable() - 1);
-                Bomb bomb = new Bomb(game, player.getPosition(), now, game.getLevel());
-                game.getWorld().addBombs(bomb);
-                spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
-            }
+            playerUseBomb(now);
         }
         if (input.isKey()){
             //Si la position de la case où regarde le joueur est la porte alors on l'ouvre
@@ -224,6 +206,10 @@ public final class GameEngine {
      */
     private void update(long now) {
         player.update(now);
+
+        if (player.isMalediction()){
+            playerUseBomb(now);
+        }
         
         //Update de tous les monstres
         List<Monster> monsters = game.getWorld().getMonsters();
@@ -272,7 +258,7 @@ public final class GameEngine {
             }
             if (bomb.getPhase() == -1 && game.getLevel() == bomb.getLevel()){
                 List<Position> zone = bomb.getZone();
-                for (Position position : zone) {
+                for (Position position : zone) { 
                     game.getWorld().clear(position);
                 }
                 iterator.remove();
@@ -352,4 +338,30 @@ public final class GameEngine {
     public void start() {
         gameLoop.start();
     }
+
+    /**
+     * Tout le processus de création de la bombe.
+     */
+    private void playerUseBomb(long now){
+        //Pas de bombe déjà sur la case
+        List<Bomb> bombs = game.getWorld().getBombs();
+        for (Bomb bomb : bombs) {
+            if (game.getPlayer().getPosition() == bomb.getPosition()) return;
+        }
+        Decor decor = game.getWorld().get(game.getPlayer().getPosition());
+        if (decor != null){
+            //pas de bombe sur les portes
+            if (decor instanceof DoorNextClosed) return;
+            if (decor instanceof DoorPrevOpened) return;
+        }
+
+        //Création de la bombe (GUI et non GUI)
+        if (player.getnbAvailable() > 0){
+            player.setnbAvailable(player.getnbAvailable() - 1);
+            Bomb bomb = new Bomb(game, player.getPosition(), now, game.getLevel());
+            game.getWorld().addBombs(bomb);
+            spritesBomb.add(SpriteFactory.createBomb(layer, bomb)); 
+        }
+    }
+
 }

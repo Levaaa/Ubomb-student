@@ -22,17 +22,57 @@ import fr.ubx.poo.model.decor.*;
 public class Player extends GameObject implements Movable {
 
     private final boolean alive = true;
+    
+    /**
+     * Direction actuelle du personnage
+     */
     Direction direction;
+
+    /**
+     *  Booléen permettant de déterminer s'il y a eu une demande de mouvement du joueur. 
+     */
     private boolean moveRequested = false;
+
+    /**
+     * Vies du joueur
+     */
     private int lives = 3;
+
+    /**
+     * Booléen permettant de déterminer si le joueur a gagné ou non. 
+     */
     private boolean winner;
-    private int range = 98;
-    private int bombs = 98;
-    private int key = 98;
+
+    /**
+     * Portée de bombe 
+     */
+    private int range = 9;
+    
+    /**
+     * Nombre de bombes totales
+     */
+    private int bombs = 9;
+
+    /**
+     * Nombre de clés
+     */
+    private int key = 9;
+
+    /**
+     * Nombre de bombes disponible.
+     */
     private int nbAvailable = bombs;
+
+    /**
+     * Boolée
+     */
     private boolean invincible = false;
-    private long timeCheck;
+    private long timeCheckInvincible;
     private boolean gotHurt = false;
+    private boolean malediction = false;
+    private boolean gotMaledictioned = false;
+    private long timeCheckMalediction;
+    private final long second = 1000000000; 
 
     
     /** 
@@ -176,6 +216,11 @@ public class Player extends GameObject implements Movable {
             if (decor instanceof DoorNextClosed) {
                 return false;
             }
+            if (decor instanceof Malediction) {
+                world.clear(nextPos);
+                malediction = true;
+                gotMaledictioned = true;
+            }
             return true;
         }
         return false;
@@ -237,13 +282,22 @@ public class Player extends GameObject implements Movable {
         }
         moveRequested = false;
 
+        //gestion temps invulnérabilité
         if (gotHurt){
-            this.timeCheck = now;
+            this.timeCheckInvincible = now;
             gotHurt = false;
         }
-
-        if(invincible && now - timeCheck >= 1 * 1000000000){
+        if(invincible && now - timeCheckInvincible >= 1 * second){
             invincible = false;
+        }
+
+        //gestion temps melediction
+        if (gotMaledictioned){
+            this.timeCheckMalediction = now;
+            gotMaledictioned = false;
+        }
+        if(malediction && now - timeCheckMalediction >= 8 * second){
+            malediction = false;
         }
 
         if (game.getWorld().get(getPosition()) instanceof Explosion) hurtPlayer();
@@ -275,6 +329,15 @@ public class Player extends GameObject implements Movable {
      */
     public boolean isInvincible(){
         return this.invincible;
+    }
+
+    /** 
+     * Retourne vrai si le joueur est Malediction, faux sinon.
+     * 
+     * @return boolean
+     */
+    public boolean isMalediction() {
+        return this.malediction;
     }
     
     /**

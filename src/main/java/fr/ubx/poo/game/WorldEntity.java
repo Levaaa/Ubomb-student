@@ -24,6 +24,7 @@ public enum WorldEntity {
     BombRangeDec('<'),
     BombNumberInc('+'),
     BombNumberDec('-'),
+    Malediction('X')
     ;
 
 

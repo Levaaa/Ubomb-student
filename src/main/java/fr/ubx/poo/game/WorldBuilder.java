@@ -68,6 +68,8 @@ public class WorldBuilder {
                 return new Key();
             case Heart:
                 return new Heart();
+            case Malediction:
+                return new Malediction();
             default:
                 return null;
         }

@@ -47,6 +47,8 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(HEART), position); 
         if (decor instanceof Explosion)
             return new SpriteDecor(layer, factory.get(EXPLOSION), position); 
+        if (decor instanceof Malediction)
+            return new SpriteDecor(layer, factory.get(MALEDICTION), position); 
         return null;
     }
 
