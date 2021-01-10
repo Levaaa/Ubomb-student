@@ -24,6 +24,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -38,22 +40,85 @@ import java.util.List;
 
 public final class GameEngine {
 
+    /**
+     * Moteur du jeu.
+     */
     private static AnimationTimer gameLoop;
-    private final String windowTitle;
-    private final Game game;
-    private final Player player;
-    private StatusBar statusBar;
-    private Pane layer;
-    private Input input;
-    private Stage stage;
-    private Sprite spritePlayer;
-    private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> spritesBomb = new ArrayList<>();
-    private final List<Sprite> spritesMonster = new ArrayList<>();
-    private final List<Sprite> spritesExplosion = new ArrayList<>();
-    private final List<World> memoryWorld = new ArrayList<>(); //Permet de mettre en mémoires les mondes au second plan
-    
 
+    /**
+     * Moteur d'ecran de fin de jeu.
+     */
+    private static AnimationTimer endLoop;
+
+    /**
+     * Titre de la fenêtre de jeu.
+     */
+    private final String windowTitle;
+
+    /**
+     * Accès au jeu en cours.
+     */
+    private final Game game;
+
+    /**
+     * Accès au joueur de la partie en cours.
+     */
+    private final Player player;
+
+    /**
+     * Barre d'êtat de la partie en cours.
+     */
+    private StatusBar statusBar;
+
+    private Pane layer;
+    
+    /**
+     * Permet de recevoir les touches que vont presser le joueur. 
+     */
+    private Input input;
+
+    /**
+     * Gestion d'affichage de la fenêtre du jeu.
+     */
+    private Stage stage;
+
+    /**
+     * Sprite du joueur.
+     */
+    private Sprite spritePlayer;
+
+    /**
+     * Sprites du décor.
+     */
+    private final List<Sprite> sprites = new ArrayList<>();
+
+    /**
+     * Sprites des bombes.
+     */
+    private final List<Sprite> spritesBomb = new ArrayList<>();
+
+    /**
+     * Sprites des Monstres.
+     */
+    private final List<Sprite> spritesMonster = new ArrayList<>();
+
+    /**
+     * Sprites des explosions.
+     */
+    private final List<Sprite> spritesExplosion = new ArrayList<>();
+
+    /**
+     * Mémoire cache des mondes déjà visités des mondes au second plan.
+     */
+    private final List<World> memoryWorld = new ArrayList<>();
+    
+    /**
+     * Constructeur
+     * 
+     * @param windowTitle Titre de fenêtre.
+     * @param game  Jeu actuel.
+     * @param stage Fenêtre de jeu.
+     */
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
@@ -62,10 +127,11 @@ public final class GameEngine {
         buildAndSetGameLoop();
     }
 
-    
     /** 
-     * @param stage
-     * @param game
+     * Initialise la fenêtre de jeu en fonction du jeu donné en paramètre.
+     * 
+     * @param stage Fenêtre d'affichage du jeu.
+     * @param game Jeu actuel.
      */
     private void initialize(Stage stage, Game game) {
         this.stage = stage;
@@ -101,6 +167,10 @@ public final class GameEngine {
         }
    }
 
+    /** 
+     * Lance le moteur de jeu qui va gérer les entrées materielles du joueur, 
+     * mettre à jour l'état du jeu et le rendu graphique du jeu 60 fois par seconde. 
+     */
     protected final void buildAndSetGameLoop() {
         gameLoop = new AnimationTimer() {
             public void handle(long now) {
@@ -117,7 +187,6 @@ public final class GameEngine {
         };
     }
 
-    
     /** 
      * Gère les différents input possibles : 
      * Flèche haut    -> Tentative mouvement vers le haut
@@ -166,28 +235,38 @@ public final class GameEngine {
         input.clear();
     }
 
-    
     /** 
-     * @param msg
-     * @param color
+     * Lance l'écran de fin de partie avec son propre moteur. Il affichera le message passé en paramètre et
+     * si la partie est gagnée il affichera aussi la princesse.  
+     * 
+     * @param msg Message à afficher.
+     * @param color Couleur du message à afficher.
      */
-    private void showMessage(String msg, Color color) {
+    private void showMessage(String msg, Color color, boolean winner) {
         Text waitingForKey = new Text(msg);
         waitingForKey.setTextAlignment(TextAlignment.CENTER);
         waitingForKey.setFont(new Font(60));
         waitingForKey.setFill(color);
         StackPane root = new StackPane();
         root.getChildren().add(waitingForKey);
-        Scene scene = new Scene(root, 400, 200, Color.WHITE);
+
+        if (winner){
+            Image princess = new Image(getClass().getResource("/images/" + "princessMenu.png").toExternalForm());
+            ImageView princessV = new ImageView(princess);
+            princessV.setTranslateY(-150);
+            root.getChildren().add(princessV);
+        }
+        Scene scene = new Scene(root, 600, 400, Color.WHITE);
         stage.setTitle(windowTitle);
         stage.setScene(scene);
         input = new Input(scene);
         stage.show();
-        new AnimationTimer() {
-            public void handle(long now) {
-                processInput(now);
-            }
-        }.start();
+        endLoop = new AnimationTimer() {
+                                    public void handle(long now) {
+                                        processInput(now);
+                                    }
+                                };
+        endLoop.start();
     }
 
     /** 
@@ -207,11 +286,12 @@ public final class GameEngine {
     private void update(long now) {
         player.update(now);
 
+        //Si le joueur est affecté par la malédiction, il posera une bombe à chaque déplacement.
         if (player.isMalediction()){
             playerUseBomb(now);
         }
         
-        //Update de tous les monstres
+        //Mise à jour de tous les monstres
         List<Monster> monsters = game.getWorld().getMonsters();
         Iterator<Monster> iteratorMonster = monsters.iterator();
         while (iteratorMonster.hasNext()) {
@@ -229,7 +309,7 @@ public final class GameEngine {
             }
         }
 
-        //Update de toutes les bombes
+        //Mise à jour de toutes les bombes
         List<Bomb> bombs = game.getWorld().getBombs();
         Iterator<Bomb> iterator = bombs.iterator();
         while (iterator.hasNext()) {
@@ -266,7 +346,7 @@ public final class GameEngine {
             
         }
 
-        //Update les décors (s'il y a eu un changement)
+        //Mise à jour les décors (s'il y a eu un changement)
         if(game.getWorld().hasChanged()){
             sprites.forEach(Sprite::remove); 
             sprites.clear();
@@ -274,7 +354,7 @@ public final class GameEngine {
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         }
 
-        //Change de monde (s'il y a un changement)
+        //Mise à jour de monde (s'il y a un changement)
         if (game.isChanged()) {
             //met le niveau actuel dans la liste de mémoire (à l'indice level - 1)
             if (memoryWorld.size() <= game.getLevel() && !memoryWorld.contains(game.getWorld())){
@@ -313,13 +393,19 @@ public final class GameEngine {
             game.setChanged(false);
         }
 
+        /**
+         * Lance l'affichage de fin de partie si le joueur à perdu.
+         */
         if (player.isAlive() == false) {
             gameLoop.stop();
-            showMessage("Perdu!", Color.RED);
+            showMessage("Perdu!", Color.RED, false);
         }
+        /**
+         * Lance l'affichage de fin de partie si le joueur à gagné.
+         */
         if (player.isWinner()) {
             gameLoop.stop();
-            showMessage("Gagné", Color.BLUE);
+            showMessage("Gagné", Color.BLUE, true);
         }        
     }
 

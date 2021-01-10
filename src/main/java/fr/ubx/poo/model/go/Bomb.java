@@ -39,6 +39,9 @@ public class Bomb extends GameObject {
      */
     private List<Position> zone = new ArrayList<>();
 
+    /**
+     * Numéro du niveau dans lequel la bombe est.
+     */
     private int level;
 
     /**
@@ -120,11 +123,7 @@ public class Bomb extends GameObject {
      * 
      */
     public void doExplosion() {
-        phase = 1;//permet de faire qu'une fois l'explosion dans update
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S);
+        doExplosion(game.getWorld());
     }
 
     /**
@@ -133,10 +132,11 @@ public class Bomb extends GameObject {
      */
     public void doExplosion(World world) {
         phase = 1;//permet de faire qu'une fois l'explosion dans update
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.W, world);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.E, world);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.N, world);
-        makeExplosion(game.getPlayer().getRange(), getPosition(), Direction.S, world);
+        int range = game.getPlayer().getRange() + 1;
+        makeExplosion(range, getPosition(), Direction.W, world);
+        makeExplosion(range, getPosition(), Direction.E, world);
+        makeExplosion(range, getPosition(), Direction.N, world);
+        makeExplosion(range, getPosition(), Direction.S, world);
     }
     /** 
      * Execute le traitement de l'explosion pour une position de cellule donnée, dans un monde donné.

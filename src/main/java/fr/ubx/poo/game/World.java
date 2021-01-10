@@ -31,49 +31,12 @@ public class World {
     }
 
     
-    /** 
-     * @return boolean
-     */
-    public boolean hasChanged() { 
-        return changed; 
-    }
-
-    
-    /** 
-     * @param bool
-     */
-    public void setChanged(boolean bool) { 
-        this.changed = bool; 
-    }
-
-
-    /** 
-     * @return List<Monster>
-     */
-    public List<Monster> getMonsters() {
-        return this.monsters;
-    }
-
-    /** 
-     * @return List<Bomb>
-     */
-    public List<Bomb> getBombs() {
-        return this.bombs;
-    }
-
-        
-    /** 
-     * @param bomb
-     */
-    public void addBombs(Bomb bomb) {
-        bombs.add(bomb);
-    }
 
     /** 
      * Cherche la position dans la grille de dépat (raw) la position du joueur.
      * 
      * @return Position Position du joueur
-     * @throws PositionNotFoundException
+     * @throws PositionNotFoundException Soulève un exception si la position n'a pas été trouvé.
      */
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
@@ -91,9 +54,9 @@ public class World {
      * Cherche la position dans la grille de départ (raw) la position de la porte, dépendant du paramètre
      * backing, qui cherche la porte suivante si backing est faux. La porte précédente s'il s'agit d'un retour.
      * 
-     * @param backing
+     * @param backing Permet de savoir si le joueur avance ou recule de monde.
      * @return Position Position de la porte
-     * @throws PositionNotFoundException
+     * @throws PositionNotFoundException Soulève un exception si la position n'a pas été trouvé.
      */
     public Position findOpenedDoor(boolean backing) throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
@@ -105,6 +68,67 @@ public class World {
             }
         }
         throw new PositionNotFoundException("Door");
+    }
+    
+    /** 
+     * Cherche la position dans la grille de dépat (raw) la ou les positions des monstres.
+     * 
+     * @return List<Position> Liste des positions des monstres trouvés. La liste peut être nulle.
+     */
+    public List<Position> findMonster() {
+        List<Position> pos = new ArrayList<>();
+        for (int x = 0; x < dimension.width; x++) {
+            for (int y = 0; y < dimension.height; y++) {
+                if (raw[y][x] == WorldEntity.Monster) {
+                    pos.add(new Position(x, y));
+                }
+            }
+        }
+        return pos;
+    }
+
+    
+    /** 
+     * Getter
+     * @return boolean
+     */
+    public boolean hasChanged() { 
+        return changed; 
+    }
+
+    
+    /** 
+     * Setter
+     * @param bool
+     */
+    public void setChanged(boolean bool) { 
+        this.changed = bool; 
+    }
+
+
+    /** 
+     * Getter
+     * @return List<Monster>
+     */
+    public List<Monster> getMonsters() {
+        return this.monsters;
+    }
+
+    /** 
+     * Getter
+     * @return List<Bomb>
+     */
+    public List<Bomb> getBombs() {
+        return this.bombs;
+    }
+
+        
+    /** 
+     * Permet d'ajouter une bombe donnée à la liste.
+     * @param bomb Bombe à ajouter.
+     */
+    public void addBombs(Bomb bomb) {
+        bombs.add(bomb);
     }
 
     
@@ -172,24 +196,4 @@ public class World {
     public boolean isEmpty(Position position) {
         return grid.get(position) == null;
     }
-
-
-    
-    /** 
-     * Cherche la position dans la grille de dépat (raw) la ou les positions des monstres.
-     * 
-     * @return List<Position> Liste des positions des monstres trouvés. La liste peut être nulle.
-     */
-    public List<Position> findMonster() {
-        List<Position> pos = new ArrayList<>();
-        for (int x = 0; x < dimension.width; x++) {
-            for (int y = 0; y < dimension.height; y++) {
-                if (raw[y][x] == WorldEntity.Monster) {
-                    pos.add(new Position(x, y));
-                }
-            }
-        }
-        return pos;
-    }
-
 }

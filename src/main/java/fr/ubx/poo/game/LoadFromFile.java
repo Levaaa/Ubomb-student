@@ -12,11 +12,21 @@ import fr.ubx.poo.game.WorldEntity;
 import java.io.FileNotFoundException;
 
 public class LoadFromFile {
+    /**
+     * Tableau de la carte à charger.
+     */
     private WorldEntity[][] mapEntities;
+    
+    /**
+     * Largeur du niveau.
+     */
     private int width;
+    
+    /**
+     * Hauteur du niveau.
+     */
     private int height;
 
-    
     /** 
      * Calcul les dimensions d'un niveau à partir du fichier correspondant au path donné
      * 
@@ -46,7 +56,8 @@ public class LoadFromFile {
     }
 
     /**
-     * Génère le tableau de WorldEntity à partir du fichier correspondant au path donné. 
+     * Génère le tableau de WorldEntity à partir du fichier correspondant au path donné.
+     * On parcourt le fichier caractère par caractère et met à jour le tableau de la classe au fur et à mesure. 
      * 
      * @param level Numéro du niveau
      * @param path Chemin du fichier

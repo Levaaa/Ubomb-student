@@ -36,7 +36,7 @@ public class Player extends GameObject implements Movable {
     /**
      * Vies du joueur
      */
-    private int lives = 3;
+    private int lives;
 
     /**
      * Booléen permettant de déterminer si le joueur a gagné ou non. 
@@ -46,17 +46,17 @@ public class Player extends GameObject implements Movable {
     /**
      * Portée de bombe 
      */
-    private int range = 9;
+    private int range;
     
     /**
      * Nombre de bombes totales
      */
-    private int bombs = 9;
+    private int bombs;
 
     /**
      * Nombre de clés
      */
-    private int key = 9;
+    private int key = 0;
 
     /**
      * Nombre de bombes disponible.
@@ -64,78 +64,39 @@ public class Player extends GameObject implements Movable {
     private int nbAvailable = bombs;
 
     /**
-     * Boolée
+     * Permet de savoir si le joueur est invincible.
      */
     private boolean invincible = false;
-    private long timeCheckInvincible;
-    private boolean gotHurt = false;
-    private boolean malediction = false;
-    private boolean gotMaledictioned = false;
-    private long timeCheckMalediction;
-    private final long second = 1000000000; 
 
-    
-    /** 
-     * @return int
+    /**
+     * Marqueur de temps où le joueur est devenu invincible pour la dernière fois.
      */
-    public int getRange() {
-        return range;
-    }
-    
-    /** 
-     * @return int
+    private long timeCheckInvincible;
+
+    /**
+     * Permet de savoir si le joueur vient de se faire toucher.
      */
-    public int getBombs() {
-        return bombs;
-    }
-    
-    /** 
-     * @return int
+    private boolean gotHurt = false;
+
+    /**
+     * Permet de savoir si le joueur est touché par la malediction.
      */
-    public int getKey() {
-        return key;
-    }
-    
-    /** 
-     * @return int
+    private boolean malediction = false;
+
+    /**
+     * Permet de savoir si la joueur vient de se faire toucher par la malediction.
      */
-    public int getnbAvailable() {
-        return nbAvailable;
-    }
+    private boolean gotMaledictioned = false;
     
-    /** 
-     * @param nb
+    /**
+     * Marqueur de temps où le joueur a été touch par la malediction pour la dernière fois.
      */
-    public void setnbAvailable(int nb) {
-        this.nbAvailable = nb;
-    }
-    
-    /** 
-     * @param nb
+    private long timeCheckMalediction;
+
+    /**
+     * Define de repère d'une seconde d'un temps géré en milliseconde.
      */
-    public void setLives(int nb) {
-        this.lives = nb;
-    }
-    
-    public Player(Game game, Position position) {
-        super(game, position);
-        this.direction = Direction.S;
-        this.lives = game.getInitPlayerLives();
-    }
-    
-    /** 
-     * @return int
-     */
-    public int getLives() {
-        return lives;
-    }
-    
-    /** 
-     * @return Direction
-     */
-    public Direction getDirection() {
-        return direction;
-    }
+    private static final long SECOND = 1000000000; 
     
     /** 
      * @param direction
@@ -287,7 +248,7 @@ public class Player extends GameObject implements Movable {
             this.timeCheckInvincible = now;
             gotHurt = false;
         }
-        if(invincible && now - timeCheckInvincible >= 1 * second){
+        if(invincible && now - timeCheckInvincible >= 1 * SECOND){
             invincible = false;
         }
 
@@ -296,7 +257,7 @@ public class Player extends GameObject implements Movable {
             this.timeCheckMalediction = now;
             gotMaledictioned = false;
         }
-        if(malediction && now - timeCheckMalediction >= 8 * second){
+        if(malediction && now - timeCheckMalediction >= 8 * SECOND){
             malediction = false;
         }
 
@@ -359,5 +320,96 @@ public class Player extends GameObject implements Movable {
      */
     public void useKey(){
         key --;
+    }
+
+    
+    /** 
+     * Getter
+     * @return int
+     */
+    public int getRange() {
+        return range;
+    }
+    
+    /** 
+     * Getter
+     * @return int
+     */
+    public int getBombs() {
+        return bombs;
+    }
+    
+    /** 
+     * Getter
+     * @return int
+     */
+    public int getKey() {
+        return key;
+    }
+    
+    /** 
+     * Getter
+     * @return int
+     */
+    public int getnbAvailable() {
+        return nbAvailable;
+    }
+    
+    /** 
+     * Setter
+     * @param nb
+     */
+    public void setnbAvailable(int nb) {
+        this.nbAvailable = nb;
+    }
+    
+    /** 
+     * Setter
+     * @param nb
+     */
+    public void setLives(int nb) {
+        this.lives = nb;
+    }
+
+    /**
+     * Setter
+     * @param range
+     */
+    public void setRange(int range) {
+        this.range = range;
+    }
+
+    /**
+     * Setter
+     * @param bombs
+     */
+    public void setBombs(int bombs) {
+        this.bombs = bombs;
+    }
+    
+    
+    /** 
+     * Getter
+     * @return int
+     */
+    public int getLives() {
+        return lives;
+    }
+    
+    /** 
+     * Getter
+     * @return Direction
+     */
+    public Direction getDirection() {
+        return direction;
+    }
+
+    /**
+     * Contructeur
+     */
+    public Player(Game game, Position position) {
+        super(game, position);
+        this.direction = Direction.S;
+        this.lives = game.getInitPlayerLives();
     }
 }
